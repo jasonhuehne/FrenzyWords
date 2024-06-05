@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neigender Container</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        #container {
+            position: fixed;
+            top: 10vh;
+            border-radius: 1em;
+            width: 100px;
+            height: 100px;
+            background-color: #3498db;
+            transition: all 0.1s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            box-Shadow: 5px 5px 15px 1px rgb(125, 125, 125), inset 10px 10px 10px -5px #6fc6ff;
+
+        }
+        #container:hover {
+            cursor: pointer;
+            background-color: #3ab0ff;
+                }
+        #container p {
+            font-size: 4em;
+            text-shadow: 1px 1px 2px rgb(75, 75, 75);
+        }
+        #container span {
+            position: relative;
+            font-size: 1em; 
+            float: right;
+            margin-top: 3em;
+            margin-right: 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="container"><p>A</p> <span>1</span></div>
+
+    <script>
+        window.onload = () => {
+            const container = document.getElementById('container');
+            const p = document.querySelector("p")
+            const maxTilt = 15; // Maximaler Neigungswinkel in Grad
+
+            document.addEventListener('mousemove', (e) => {
+                const rect = container.getBoundingClientRect();
+                const containerX = rect.left + rect.width / 2;
+                const containerY = rect.top + rect.height / 2;
+
+                const deltaX = e.clientX - containerX;
+                const deltaY = e.clientY - containerY;
+
+                const percentageX = deltaX / (window.innerWidth / 2);
+                const percentageY = deltaY / (window.innerHeight / 2);
+
+                const tiltX = percentageY * maxTilt;
+                const tiltY = -percentageX * maxTilt;
+
+                container.style.transform = `rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
+                container.style.boxShadow = `${tiltY/2}px ${-tiltX/2}px 15px 1px rgb(125, 125, 125), inset 10px 10px 10px -5px #6fc6ff`
+                p.style.textShadow = `${tiltY/7.5}px ${-tiltX/7.5}px 2px rgb(75, 75, 75)`
+            });
+            container.addEventListener('mouseover', (event) => {    
+                container.style.rotate ='-2deg'
+                container.style.rotate = '-2deg'
+            })
+            container.addEventListener('mouseout', (event) => {
+                container.style.rotate ='0deg'
+                container.style.rotate = '0deg'
+                        })
+            container.addEventListener('click', (event)=> {
+                if (container.style.top == "10vh")
+                container.style.top = '50vh'
+            else 
+            container.style.top = '10vh'
+            })
+        
+            
+        };
+    </script>
+</body>
+
+</html>

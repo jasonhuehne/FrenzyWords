@@ -1,0 +1,74 @@
+@font-face {
+    font-family: "Atalon";
+    src: url(font/Atalon.otf) format("opentype");
+}
+@font-face {
+    font-family: "Gincu";
+    src: url(font/Gincu.ttf) format("truetype");
+}
+@font-face {
+    font-family: "Rudiment";
+    src: url(font/Rudiment.ttf) format("truetype");
+}
+body {
+    background-color: antiquewhite;
+    color: rgb(29, 29, 29);
+    overflow: hidden;
+    font-family: "Rudiment";
+    margin: auto;
+    text-align: center;
+    letter-spacing: .5em;
+
+}
+h1 {
+    font-family: "Atalon";
+    font-size: 5em;
+}
+a {
+ text-decoration: none;
+ color: inherit;
+}
+footer {
+    margin-top: 50%;
+    font-size: 1.5em;
+}
+#StartOverlay {
+background-color: white;
+border-radius: 2em;
+padding: 3em;
+position: fixed;
+top: 40%;
+left: 50%;
+transform: translate(-50%, -50%);}
+#StartOverlay button {
+    margin-top: 100px;
+    font-size: 1.5em;
+    font-family: 'Rudiment';
+    font-weight: bold;
+    border: none;
+    padding: 0.5em;
+    padding-left: 3em;
+    padding-right: 3em;
+    border-radius: 2em;
+    cursor: pointer;
+    transition: all 123ms;
+    letter-spacing: 0.15em;
+}
+#StartOverlay button:hover {
+    transform: scale(1.05);
+    filter: invert(100%);
+    rotate: -3deg;
+}
+.Letter {
+    border-radius: 0.2em;
+    font-family: 'Rudiment';
+    font-size: 5em;
+    text-align: center;
+    width: 1em;
+    height: 1em;
+    background-color: rgb(148, 148, 148);
+    box-shadow: 1px 1px 7px 4px rgba(65,65,65,0.87)
+}
+.hidden {
+    display: none;
+}
