@@ -5,18 +5,9 @@ let startOverlay: HTMLDivElement
 let playButton: HTMLButtonElement
 let gameArea: HTMLDivElement
 let wordArea: HTMLDivElement
-let letterArea: HTMLDivElement
-let letter: Letter 
-let letters: [];
-interface Vector {
-    x: number
-    y: number
-}
-Letter {
-    value: number
-    pos: Vector
-    container: HTMLDivElement    
-}
+export let letterArea: HTMLDivElement;
+const containers: Letter[] = [];
+const maxTilt = 20; // Maximaler Neigungswinkel in Grad
 
 function hndLoad() {
  body = <HTMLBodyElement> document.querySelector("body");
@@ -26,20 +17,25 @@ function hndLoad() {
  wordArea = <HTMLDivElement> document.getElementById ("WordArea")
  letterArea = <HTMLDivElement> document.getElementById("LetterArea")
  playButton.addEventListener("click", hndStart);
- document.addEventListener("keydown", (_r) => hndReset())
-
 }
+
+
 function hndStart () {
+    document.addEventListener("keydown", (e) => {
+        if (e.code == "k"){
+            hndReset
+        } else {
+            return;
+        }
+     } )
     body.removeChild(startOverlay)
         for (let index = 0; index < 8; index++) {
-
-            
+            let letter: Letter = new Letter("A", 2)
+           containers.push(letter)  
         }
-         container = <HTMLDivElement>document.getElementById('container');
-         maxTilt = 15; // Maximaler Neigungswinkel in Grad
-
         document.addEventListener('mousemove', (e) => {
-            const rect = container.getBoundingClientRect();
+        containers.forEach(Letter => {
+            const rect = Letter.container.div.getBoundingClientRect();
             const containerX = rect.left + rect.width / 2;
             const containerY = rect.top + rect.height / 2;
 
@@ -52,12 +48,34 @@ function hndStart () {
             const tiltX = percentageY * maxTilt;
             const tiltY = -percentageX * maxTilt;
 
-            container.style.transform = `rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
-        });        
-    }
+            Letter.container.div.style.transform = `rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
+            Letter.container.div.style.boxShadow = `${tiltY / 2}px ${-tiltX / 2}px 15px 1px rgb(125, 125, 125), inset 10px 10px 10px -5px #6fc6ff`
+            Letter.container.value.style.textShadow = `${tiltY / 7.5}px ${-tiltX / 7.5}px 2px rgb(75, 75, 75)`
+
+        })
+        containers.forEach(Letter => {
+            Letter.container.div.addEventListener('mouseover', () => {
+                Letter.container.div.style.rotate = '-2deg';
+            });
+
+            Letter.container.div.addEventListener('mouseout', () => {
+                Letter.container.div.style.rotate = '0deg';
+            });
+
+            Letter.container.div.addEventListener('click', () => {
+                if (Letter.container.div.style.top == "10vh")
+                    Letter.container.div.style.top = '50vh';
+                else
+                Letter.container.div.style.top = '10vh';
+            });
+        })
+    })
+    
 
 }
 function hndReset () {
+    console.log("asdasd")
     body.prepend(startOverlay)
 }
 }
+
