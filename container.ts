@@ -31,8 +31,10 @@ namespace FrenzyWords {
             });
         }
         select() {
+            if (!transition){
             if (!this.selected) {
                 this.transitioning = true;
+                transition = true
                 lettersPlayed.push(this)
                 const pseudoContainer = document.createElement('div')
                 pseudoContainer.classList.add("Container")
@@ -60,10 +62,12 @@ namespace FrenzyWords {
                     document.getElementById('GameArea')!.appendChild(this.div);
                     this.selected = true;
                     this.transitioning = false;
+                    transition = false
                 }, { once: true });
             } else {
                 // Logik für das LetterArea-Element (ähnlich wie für das GameArea-Element)
                 lettersPlayed.splice(lettersPlayed.indexOf(this), 1)
+                transition = true
                 const pseudoContainer = document.createElement('div')
                 pseudoContainer.classList.add("Container")
                 pseudoContainer.style.opacity = "0"
@@ -84,9 +88,10 @@ namespace FrenzyWords {
                     this.div.style.transform = 'none';
                     document.getElementById('LetterArea')!.appendChild(this.div);
                     this.selected = false;
+                    transition = false
                 }, { once: true });
             }
-        }
+        }}
         
         
         

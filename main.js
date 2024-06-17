@@ -8,6 +8,7 @@ var FrenzyWords;
     let swapButton;
     let playWordButton;
     FrenzyWords.lettersPlayed = [];
+    FrenzyWords.transition = false;
     let containers = [];
     FrenzyWords.transitioning = false;
     let gameStarted = false;

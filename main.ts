@@ -9,6 +9,7 @@ namespace FrenzyWords {
     export let wordArea: HTMLDivElement;
     export let letterArea: HTMLDivElement;
     export let lettersPlayed: Container[] = [];
+    export let transition: boolean= false;
     let containers: Container[] = [];
     interface Letters {
         letter: Letter;
