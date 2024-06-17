@@ -33,25 +33,28 @@ namespace FrenzyWords {
         select() {
             if (!this.selected) {
                 this.transitioning = true;
-                lettersPlayed.push(this)
-                const pseudoContainer = document.createElement('div')
-                pseudoContainer.classList.add("Container")
-                pseudoContainer.style.opacity = "0"
-                gameArea.appendChild (pseudoContainer)
+                lettersPlayed.push(this);
+                const pseudoContainer = document.createElement('div');
+                pseudoContainer.classList.add("Container");
+                pseudoContainer.style.opacity = "0";
+                gameArea.appendChild(pseudoContainer);
+        
                 // Logik für das LetterArea-Element (ähnlich wie für das GameArea-Element)
-                const letterAreaRect = document.getElementById('GameArea')!.getBoundingClientRect();
-                const letterAreaTop = letterAreaRect.top + window.scrollY;
-                const letterAreaLeft = letterAreaRect.right + window.scrollX;
+                const gameAreaRect = document.getElementById('GameArea')!.getBoundingClientRect();
+                const gameAreaTop = gameAreaRect.top + window.scrollY;
+                const gameAreaLeft = gameAreaRect.right + window.scrollX;
         
                 const currentRect = this.div.getBoundingClientRect();
                 const currentTop = currentRect.top + window.scrollY;
                 const currentLeft = currentRect.right + window.scrollX;
-        
-                this.div.style.transition = 'transform 0.5s ease, box-shadow 0.5s ease';
-                this.div.style.transform = `translate(${letterAreaLeft - currentLeft}px, ${letterAreaTop - currentTop}px) rotate(720deg)`;
+                this.div.style.transition = 'transform 0.5s ease, box-shadow 0.5s ease, background-color 0.5s ease';
+                this.div.style.width ="7vw"
+                this.div.style.height="7vw"
+                this.div.style.backgroundColor =     "#0e5686";
+                this.div.style.transform = `translate(${gameAreaLeft - currentLeft}px, ${gameAreaTop - currentTop}px) rotate(-360deg)`;
         
                 this.div.addEventListener('transitionend', () => {
-                    gameArea.removeChild(pseudoContainer)
+                    gameArea.removeChild(pseudoContainer);
                     this.div.style.transition = 'none';
                     this.div.style.transform = 'none';
                     this.div.style.boxShadow = '5px 5px 15px 1px rgb(125, 125, 125), inset 10px 10px 10px -5px #6fc6ff';
@@ -62,31 +65,39 @@ namespace FrenzyWords {
                     this.transitioning = false;
                 }, { once: true });
             } else {
-                // Logik für das LetterArea-Element (ähnlich wie für das GameArea-Element)
-                lettersPlayed.splice(lettersPlayed.indexOf(this), 1)
-                const pseudoContainer = document.createElement('div')
-                pseudoContainer.classList.add("Container")
-                pseudoContainer.style.opacity = "0"
-                letterArea.appendChild (pseudoContainer)
+                this.transitioning = true;
+
+        
                 const letterAreaRect = document.getElementById('LetterArea')!.getBoundingClientRect();
                 const letterAreaTop = letterAreaRect.top + window.scrollY;
                 const letterAreaLeft = letterAreaRect.right + window.scrollX;
         
                 const currentRect = this.div.getBoundingClientRect();
                 const currentTop = currentRect.top + window.scrollY;
-                const currentLeft = currentRect.right + window.scrollX;
+                const currentLeft = currentRect.left + window.scrollX;
         
-                this.div.style.transition = 'transform 0.5s ease, box-shadow 0.5s ease';
-                this.div.style.transform = `translate(${letterAreaLeft - currentLeft}px, ${letterAreaTop - currentTop}px) rotate(360deg)`;
-                            letterArea.removeChild(pseudoContainer) 
-                this.div.addEventListener('transitionend', () => {   
+                this.div.style.transition = 'transform 0.3s ease, box-shadow 0.3s ease, background-color 0.5s ease, width 2s ease-in, height 2s ease-in';
+                this.div.style.width ="6vw"
+                this.div.style.height="6vw"
+                this.div.style.backgroundColor =     "#3498db";
+                this.div.style.transform = `translate(${letterAreaLeft - currentLeft}px, ${letterAreaTop - currentTop}px)`;
+                this.div.style.boxShadow = "box-shadow: 5px 5px 15px 1px rgb(125, 125, 125), inset 10px 10px 10px -5px #6fc6ff;"
+                lettersPlayed.splice(lettersPlayed.indexOf(this), 1);
+                const pseudoContainer = document.createElement('div');
+                pseudoContainer.classList.add("Container");
+                pseudoContainer.style.opacity = "0";
+                letterArea.appendChild(pseudoContainer);
+                this.div.addEventListener('transitionend', () => {
+                    letterArea.removeChild(pseudoContainer);
                     this.div.style.transition = 'none';
                     this.div.style.transform = 'none';
                     document.getElementById('LetterArea')!.appendChild(this.div);
                     this.selected = false;
+                    this.transitioning = false;
                 }, { once: true });
             }
         }
+        
         
         
         
