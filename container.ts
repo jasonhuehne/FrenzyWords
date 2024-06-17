@@ -33,6 +33,11 @@ namespace FrenzyWords {
         select() {
             if (!this.selected) {
                 this.transitioning = true;
+                lettersPlayed.push(this)
+                const pseudoContainer = document.createElement('div')
+                pseudoContainer.classList.add("Container")
+                pseudoContainer.style.opacity = "0"
+                gameArea.appendChild (pseudoContainer)
                 // Logik für das LetterArea-Element (ähnlich wie für das GameArea-Element)
                 const letterAreaRect = document.getElementById('GameArea')!.getBoundingClientRect();
                 const letterAreaTop = letterAreaRect.top + window.scrollY;
@@ -43,9 +48,10 @@ namespace FrenzyWords {
                 const currentLeft = currentRect.right + window.scrollX;
         
                 this.div.style.transition = 'transform 0.5s ease, box-shadow 0.5s ease';
-                this.div.style.transform = `translate(${letterAreaLeft - currentLeft}px, ${letterAreaTop - currentTop}px) rotate(360deg)`;
+                this.div.style.transform = `translate(${letterAreaLeft - currentLeft}px, ${letterAreaTop - currentTop}px) rotate(720deg)`;
         
                 this.div.addEventListener('transitionend', () => {
+                    gameArea.removeChild(pseudoContainer)
                     this.div.style.transition = 'none';
                     this.div.style.transform = 'none';
                     this.div.style.boxShadow = '5px 5px 15px 1px rgb(125, 125, 125), inset 10px 10px 10px -5px #6fc6ff';
@@ -57,6 +63,11 @@ namespace FrenzyWords {
                 }, { once: true });
             } else {
                 // Logik für das LetterArea-Element (ähnlich wie für das GameArea-Element)
+                lettersPlayed.splice(lettersPlayed.indexOf(this), 1)
+                const pseudoContainer = document.createElement('div')
+                pseudoContainer.classList.add("Container")
+                pseudoContainer.style.opacity = "0"
+                letterArea.appendChild (pseudoContainer)
                 const letterAreaRect = document.getElementById('LetterArea')!.getBoundingClientRect();
                 const letterAreaTop = letterAreaRect.top + window.scrollY;
                 const letterAreaLeft = letterAreaRect.right + window.scrollX;
@@ -67,8 +78,8 @@ namespace FrenzyWords {
         
                 this.div.style.transition = 'transform 0.5s ease, box-shadow 0.5s ease';
                 this.div.style.transform = `translate(${letterAreaLeft - currentLeft}px, ${letterAreaTop - currentTop}px) rotate(360deg)`;
-        
-                this.div.addEventListener('transitionend', () => {    
+                            letterArea.removeChild(pseudoContainer) 
+                this.div.addEventListener('transitionend', () => {   
                     this.div.style.transition = 'none';
                     this.div.style.transform = 'none';
                     document.getElementById('LetterArea')!.appendChild(this.div);

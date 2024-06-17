@@ -7,6 +7,7 @@ var FrenzyWords;
     let playButton;
     let swapButton;
     let playWordButton;
+    FrenzyWords.lettersPlayed = [];
     let containers = [];
     FrenzyWords.transitioning = false;
     let gameStarted = false;
@@ -111,7 +112,11 @@ var FrenzyWords;
         createContainers();
     }
     function hndPlayWord() {
-        console.log("Spiel gestartet mit den ausgewählten Buchstaben!");
+        let playedWord = "";
+        for (let index = 0; index < FrenzyWords.lettersPlayed.length; index++) {
+            playedWord += FrenzyWords.lettersPlayed[index].letter.indicator;
+        }
+        console.log(playedWord);
     }
 })(FrenzyWords || (FrenzyWords = {}));
 //# sourceMappingURL=main.js.map

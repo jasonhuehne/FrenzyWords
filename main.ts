@@ -8,6 +8,7 @@ namespace FrenzyWords {
     export let gameArea: HTMLDivElement;
     export let wordArea: HTMLDivElement;
     export let letterArea: HTMLDivElement;
+    export let lettersPlayed: Container[] = [];
     let containers: Container[] = [];
     interface Letters {
         letter: Letter;
@@ -129,6 +130,11 @@ namespace FrenzyWords {
   
 
     function hndPlayWord() {
-        console.log("Spiel gestartet mit den ausgewählten Buchstaben!");
+        let playedWord: string = ""
+            for (let index = 0; index < lettersPlayed.length; index++) {
+                playedWord += lettersPlayed[index].letter.indicator
+                
+            }
+            console.log(playedWord)
     }
 }
