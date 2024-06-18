@@ -48,7 +48,7 @@ namespace FrenzyWords {
                 const currentTop = currentRect.top + window.scrollY;
                 const currentLeft = currentRect.right + window.scrollX;
                 this.div.style.transition = 'transform 0.5s ease, box-shadow 0.5s ease, background-color 0.5s ease';
-                this.div.style.boxShadow = '5px 5px 15px 1px rgb(125, 125, 125), inset 10px 10px 10px -5px #3498db';
+                this.div.style.boxShadow = 'none';
                 this.div.style.backgroundColor =     "#0e5686";
                 this.div.style.transform = `translate(${gameAreaLeft - currentLeft}px, ${gameAreaTop - currentTop}px) rotate(-360deg)`;
                 
@@ -56,7 +56,6 @@ namespace FrenzyWords {
                     gameArea.removeChild(pseudoContainer);
                     this.div.style.transition = 'none';
                     this.div.style.transform = 'none';
-                    this.div.style.boxShadow = '5px 5px 15px 1px rgb(125, 125, 125), inset 10px 10px 10px -5px #3498db';
                     this.transitioning = false;
                     this.spanValue.style.textShadow = '1px 1px 2px rgb(75, 75, 75)';
         
@@ -75,10 +74,10 @@ namespace FrenzyWords {
                 const currentTop = currentRect.top + window.scrollY;
                 const currentLeft = currentRect.left + window.scrollX;
         
-                this.div.style.transition = 'transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease';
+                this.div.style.transition = 'transform 0.3s ease, background-color 0.3s ease';
                 this.div.style.backgroundColor =     "#3498db";
                 this.div.style.transform = `translate(${letterAreaLeft - currentLeft}px, ${letterAreaTop - currentTop}px) rotate(360deg)`;
-                this.div.style.boxShadow = "box-shadow: 5px 5px 15px 1px rgb(125, 125, 125), inset 10px 10px 10px -5px #6fc6ff;"
+
                 lettersPlayed.splice(lettersPlayed.indexOf(this), 1);
                 const pseudoContainer = document.createElement('div');
                 pseudoContainer.classList.add("Container");
@@ -90,7 +89,6 @@ namespace FrenzyWords {
                     this.div.style.transition = 'none';
                     this.div.style.transform = 'none';
                     document.getElementById('LetterArea')!.appendChild(this.div);
-                    this.div.style.boxShadow = "box-shadow: 5px 5px 15px 1px rgb(125, 125, 125), inset 10px 10px 10px -5px #6fc6ff;"
                     this.selected = false;
                 }, { once: true });
             }
@@ -102,7 +100,7 @@ namespace FrenzyWords {
         
         
         followMouse (_e: MouseEvent) {
-            if (this.selected == false && !this.transitioning) {
+            if (!this.transitioning) {
             this.rect = this.div.getBoundingClientRect();
             const containerX = this.rect.left + this.rect.width / 2;
             const containerY = this.rect.top + this.rect.height / 2;
@@ -115,11 +113,15 @@ namespace FrenzyWords {
 
             const tiltX = percentageY * 20;
             const tiltY = -percentageX * 20;
-
-            this.div.style.transform = `rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
-            this.div.style.boxShadow = `${tiltY / 2}px ${-tiltX / 2}px 15px 1px rgb(125, 125, 125), inset 10px 10px 10px -5px #6fc6ff`
-            this.spanValue.style.textShadow = `${tiltY / 7.5}px ${-tiltX / 7.5}px 2px rgb(75, 75, 75)`
+            if (!this.selected && !transitioning || this.selected && transitioning){    
+            this.div.style.transform = `rotateX(${-tiltX / 1.5}deg) rotateY(${-tiltY / 1.5}deg)`;
+            this.div.style.boxShadow = `${tiltY / 2}px ${-tiltX / 2}px 15px 1px rgb(125, 125, 125), inset ${tiltY / 2}px ${-tiltX / 2}px 12px 3px #6fc6ff`
+            this.spanValue.style.textShadow = `${tiltY / 6.66}px ${-tiltX / 6.66}px 2px rgb(75, 75, 75)`
+            } else {
+            this.div.style.boxShadow = `0px 0px 15px 1px rgb(125, 125, 125), inset ${tiltY / 5}px ${-tiltX / 2.5}px 20px -5px #6fc6ff`
+            this.spanValue.style.textShadow = `${tiltY / 6.66}px ${-tiltX / 6.66}px 2px rgb(75, 75, 75)`    
             }
+        }
         }
 
     }

@@ -95,6 +95,7 @@ var FrenzyWords;
         });
     }
     function hndSwapLetters() {
+        FrenzyWords.lettersPlayed = [];
         let swapAmount = 0;
         // Durchlaufe rückwärts, um Elemente sicher zu entfernen
         for (let i = containers.length - 1; i >= 0; i--) {

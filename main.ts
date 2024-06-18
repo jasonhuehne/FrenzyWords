@@ -108,6 +108,7 @@ namespace FrenzyWords {
       });
     }
     function hndSwapLetters() {
+        lettersPlayed = []
       let swapAmount: number = 0;
       // Durchlaufe rückwärts, um Elemente sicher zu entfernen
       for (let i = containers.length - 1; i >= 0; i--) {

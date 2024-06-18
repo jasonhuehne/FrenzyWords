@@ -62,15 +62,15 @@ transform: translate(-50%, -50%);}
 }
 .Letter {
     font-family: 'Rudiment';
-    font-size: 5em;
+    font-size: 7em;
     text-align: center;
     text-shadow: 1px 1px 2px rgb(75, 75, 75);
 }
 .Value {
     margin-bottom: -2em;
-    margin-right: -1em;
+    margin-right: -0.5em;
     font-family: 'Rudiment';
-    font-size: 1em;
+    font-size: 2em;
 }
 .Container {
     border-radius: 1em;
@@ -86,21 +86,19 @@ transform: translate(-50%, -50%);}
 }
 .Container:hover {
     cursor: pointer;
+    rotate: 2deg;
 }
 #LetterArea {
     position: absolute;
-    top: 80%;
+    top: 60%;
     left: 50%;
     transform: translate(-50%, -50%);
     display: flex;
     gap: 1em;
 }
-#LetterArea .Container:hover {
-    rotate: 2deg;
-}
 #GameArea  {
     position: absolute;
-    top: 50%;
+    top: 30%;
     left: 50%;
     transform: translate(-50%, -50%);
     display: flex;
