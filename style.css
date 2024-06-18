@@ -74,8 +74,8 @@ transform: translate(-50%, -50%);}
 }
 .Container {
     border-radius: 1em;
-    width: 6vw;
-    height: 6vw;
+    width: 13vh;
+    height: 13vh;
     background-color: #3498db;
     transition: all 0.33Ss;
     display: flex;
@@ -99,7 +99,6 @@ transform: translate(-50%, -50%);}
     rotate: 2deg;
 }
 #GameArea  {
-    z-index: 3;
     position: absolute;
     top: 50%;
     left: 50%;
@@ -107,10 +106,8 @@ transform: translate(-50%, -50%);}
     display: flex;
     gap: 0.5em;
 }
-#GameArea .Container {
-    background-color: #0e5686;
-    width: 7vw;
-    height: 7vw;
+#GameArea .Container:hover {
+opacity: 0.6;
 }
 .hidden {
     display: none;

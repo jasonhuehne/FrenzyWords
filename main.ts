@@ -133,8 +133,8 @@ namespace FrenzyWords {
         let playedWord: string = ""
             for (let index = 0; index < lettersPlayed.length; index++) {
                 playedWord += lettersPlayed[index].letter.indicator
-                
-            }
+                }
+            lettersPlayed = []
             console.log(playedWord)
     }
 }

@@ -47,19 +47,18 @@ var FrenzyWords;
                 const currentTop = currentRect.top + window.scrollY;
                 const currentLeft = currentRect.right + window.scrollX;
                 this.div.style.transition = 'transform 0.5s ease, box-shadow 0.5s ease, background-color 0.5s ease';
-                this.div.style.width = "7vw";
-                this.div.style.height = "7vw";
+                this.div.style.boxShadow = '5px 5px 15px 1px rgb(125, 125, 125), inset 10px 10px 10px -5px #3498db';
                 this.div.style.backgroundColor = "#0e5686";
                 this.div.style.transform = `translate(${gameAreaLeft - currentLeft}px, ${gameAreaTop - currentTop}px) rotate(-360deg)`;
                 this.div.addEventListener('transitionend', () => {
                     FrenzyWords.gameArea.removeChild(pseudoContainer);
                     this.div.style.transition = 'none';
                     this.div.style.transform = 'none';
-                    this.div.style.boxShadow = '5px 5px 15px 1px rgb(125, 125, 125), inset 10px 10px 10px -5px #6fc6ff';
+                    this.div.style.boxShadow = '5px 5px 15px 1px rgb(125, 125, 125), inset 10px 10px 10px -5px #3498db';
+                    this.transitioning = false;
                     this.spanValue.style.textShadow = '1px 1px 2px rgb(75, 75, 75)';
                     document.getElementById('GameArea').appendChild(this.div);
                     this.selected = true;
-                    this.transitioning = false;
                 }, { once: true });
             }
             else {
@@ -70,11 +69,9 @@ var FrenzyWords;
                 const currentRect = this.div.getBoundingClientRect();
                 const currentTop = currentRect.top + window.scrollY;
                 const currentLeft = currentRect.left + window.scrollX;
-                this.div.style.transition = 'transform 0.3s ease, box-shadow 0.3s ease, background-color 0.5s ease, width 2s ease-in, height 2s ease-in';
-                this.div.style.width = "6vw";
-                this.div.style.height = "6vw";
+                this.div.style.transition = 'transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease';
                 this.div.style.backgroundColor = "#3498db";
-                this.div.style.transform = `translate(${letterAreaLeft - currentLeft}px, ${letterAreaTop - currentTop}px)`;
+                this.div.style.transform = `translate(${letterAreaLeft - currentLeft}px, ${letterAreaTop - currentTop}px) rotate(360deg)`;
                 this.div.style.boxShadow = "box-shadow: 5px 5px 15px 1px rgb(125, 125, 125), inset 10px 10px 10px -5px #6fc6ff;";
                 FrenzyWords.lettersPlayed.splice(FrenzyWords.lettersPlayed.indexOf(this), 1);
                 const pseudoContainer = document.createElement('div');
@@ -83,11 +80,12 @@ var FrenzyWords;
                 FrenzyWords.letterArea.appendChild(pseudoContainer);
                 this.div.addEventListener('transitionend', () => {
                     FrenzyWords.letterArea.removeChild(pseudoContainer);
+                    this.transitioning = false;
                     this.div.style.transition = 'none';
                     this.div.style.transform = 'none';
                     document.getElementById('LetterArea').appendChild(this.div);
+                    this.div.style.boxShadow = "box-shadow: 5px 5px 15px 1px rgb(125, 125, 125), inset 10px 10px 10px -5px #6fc6ff;";
                     this.selected = false;
-                    this.transitioning = false;
                 }, { once: true });
             }
         }

@@ -116,6 +116,7 @@ var FrenzyWords;
         for (let index = 0; index < FrenzyWords.lettersPlayed.length; index++) {
             playedWord += FrenzyWords.lettersPlayed[index].letter.indicator;
         }
+        FrenzyWords.lettersPlayed = [];
         console.log(playedWord);
     }
 })(FrenzyWords || (FrenzyWords = {}));
