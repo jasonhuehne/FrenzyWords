@@ -124,7 +124,7 @@ namespace FrenzyWords {
         }
         async hndCorrect() {
             transitioning = true;
-            this.div.style.transition = "background-color 300ms ease, color 300ms ease, box-shadow 300ms ease, transform 300ms, opacity 1000ms ease-out";
+            this.div.style.transition = "background-color 500ms ease-in, color 300ms ease, box-shadow 300ms ease, transform 300ms, opacity 1000ms ease-out";
             this.div.style.transform ="rotate(-15deg)"
             this.div.style.backgroundColor = "#39db34";
             this.div.style.boxShadow = "none"
