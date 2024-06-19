@@ -8,12 +8,10 @@ var FrenzyWords;
         spanValue;
         selected;
         rect;
-        transitioning;
         constructor(_letter) {
             this.draw(_letter);
         }
         draw(_letter) {
-            this.transitioning = false;
             this.letter = _letter;
             this.div = document.createElement("div");
             this.div.classList.add("Container");
@@ -28,12 +26,14 @@ var FrenzyWords;
             this.selected = false;
             FrenzyWords.letterArea.append(this.div);
             this.div.addEventListener('click', () => {
-                this.select();
+                if (!FrenzyWords.transitioning) {
+                    this.select();
+                }
             });
         }
         select() {
             if (!this.selected) {
-                this.transitioning = true;
+                FrenzyWords.transitioning = true;
                 FrenzyWords.lettersPlayed.push(this);
                 const pseudoContainer = document.createElement('div');
                 pseudoContainer.classList.add("Container");
@@ -54,14 +54,14 @@ var FrenzyWords;
                     FrenzyWords.gameArea.removeChild(pseudoContainer);
                     this.div.style.transition = 'none';
                     this.div.style.transform = 'none';
-                    this.transitioning = false;
+                    FrenzyWords.transitioning = false;
                     this.spanValue.style.textShadow = '1px 1px 2px rgb(75, 75, 75)';
                     document.getElementById('GameArea').appendChild(this.div);
                     this.selected = true;
                 }, { once: true });
             }
             else {
-                this.transitioning = true;
+                FrenzyWords.transitioning = true;
                 const letterAreaRect = document.getElementById('LetterArea').getBoundingClientRect();
                 const letterAreaTop = letterAreaRect.top + window.scrollY;
                 const letterAreaLeft = letterAreaRect.right + window.scrollX;
@@ -78,7 +78,7 @@ var FrenzyWords;
                 FrenzyWords.letterArea.appendChild(pseudoContainer);
                 this.div.addEventListener('transitionend', () => {
                     FrenzyWords.letterArea.removeChild(pseudoContainer);
-                    this.transitioning = false;
+                    FrenzyWords.transitioning = false;
                     this.div.style.transition = 'none';
                     this.div.style.transform = 'none';
                     document.getElementById('LetterArea').appendChild(this.div);
@@ -87,7 +87,8 @@ var FrenzyWords;
             }
         }
         followMouse(_e) {
-            if (!this.transitioning) {
+            FrenzyWords.Scorelist.scoreRect = FrenzyWords.Scorelist.scoreSpan.getBoundingClientRect();
+            if (!FrenzyWords.transitioning) {
                 this.rect = this.div.getBoundingClientRect();
                 const containerX = this.rect.left + this.rect.width / 2;
                 const containerY = this.rect.top + this.rect.height / 2;
@@ -104,9 +105,46 @@ var FrenzyWords;
                 }
                 else {
                     this.div.style.boxShadow = `0px 0px 15px 1px rgb(125, 125, 125), inset ${tiltY / 5}px ${-tiltX / 2.5}px 20px -5px #6fc6ff`;
-                    this.spanValue.style.textShadow = `${tiltY / 6.66}px ${-tiltX / 6.66}px 2px rgb(75, 75, 75)`;
                 }
             }
+        }
+        async hndCorrect() {
+            FrenzyWords.transitioning = true;
+            this.div.style.transition = "background-color 300ms ease, color 300ms ease, box-shadow 300ms ease, transform 300ms, opacity 1000ms ease-out";
+            this.div.style.transform = "rotate(-15deg)";
+            this.div.style.backgroundColor = "#39db34";
+            this.div.style.boxShadow = "none";
+            this.spanValue.style.color = "black";
+            // Listen for the end of the background and color transition
+            this.div.addEventListener('transitionend', () => {
+                // Calculate the center of the scoreRect
+                const scoreRect = FrenzyWords.Scorelist.scoreRect;
+                const targetCenterX = scoreRect.left + scoreRect.width / 2;
+                const targetCenterY = scoreRect.top + scoreRect.height / 2;
+                // Get the current position of the spanValue
+                const currentRect = this.spanValue.getBoundingClientRect();
+                const currentCenterX = currentRect.left + currentRect.width / 2;
+                const currentCenterY = currentRect.top + currentRect.height / 2;
+                // Calculate the translation values
+                const translateX = targetCenterX - currentCenterX;
+                const translateY = targetCenterY - currentCenterY;
+                // Set up the transformation to move spanValue to the center of scoreRect
+                this.spanValue.style.transition = 'transform 0.3s ease';
+                this.spanValue.style.transform = `translate(${translateX}px, ${translateY}px)`;
+                this.div.style.transform = "rotate(0deg)";
+                // Listen for the end of the transform transition
+                this.spanValue.addEventListener('transitionend', () => {
+                    // After the transform transition ends, fade out the spanValue
+                    this.spanValue.style.transition = "opacity 0.3s";
+                    this.spanValue.style.opacity = "0";
+                    this.div.style.opacity = "0";
+                    this.div.style.cursor = "auto";
+                    // Add the score to the Scorelist
+                    FrenzyWords.Scorelist.add(parseInt(this.spanValue.innerHTML));
+                }, { once: true });
+            }, { once: true });
+            // Return a promise that resolves after the initial transition (background and color) ends
+            return new Promise(resolve => setTimeout(resolve, 300));
         }
     }
     FrenzyWords.Container = Container;

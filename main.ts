@@ -5,9 +5,24 @@ namespace FrenzyWords {
     let playButton: HTMLButtonElement;
     let swapButton: HTMLButtonElement;
     let playWordButton: HTMLButtonElement;
+    export let scoreArea: HTMLDivElement;
     export let gameArea: HTMLDivElement;
     export let wordArea: HTMLDivElement;
     export let letterArea: HTMLDivElement;
+    let germanWords: Set<string>;
+    export let Scorelist: Score
+        // Überprüfung Wort deutsch
+    async function loadWordList(): Promise<Set<string>> {
+        const response = await fetch('https://gist.githubusercontent.com/MarvinJWendt/2f4f4154b8ae218600eb091a5706b5f4/raw/36b70dd6be330aa61cd4d4cdfda6234dcb0b8784/wordlist-german.txt');
+        const text = await response.text();
+        const wordsArray = text.split(/\r?\n/).map(word => word.toLowerCase()); // Wörter in Kleinbuchstaben umwandeln
+        return new Set(wordsArray);
+    }
+
+    async function isGermanWord(word: string): Promise<boolean> {
+        return germanWords.has(word.toLowerCase()); // Eingabewort in Kleinbuchstaben umwandeln
+    }
+
     export let lettersPlayed: Container[] = [];
     let containers: Container[] = [];
     interface Letters {
@@ -54,22 +69,27 @@ namespace FrenzyWords {
     export let selectedLetters: Letter[] = [];
     export let deck: Letter[] = [];
 
-    function hndLoad() {
+    async function hndLoad() {
         body = <HTMLBodyElement>document.querySelector("body");
         startOverlay = <HTMLDivElement>document.getElementById("StartOverlay");
         playButton = <HTMLButtonElement>document.getElementById("playButton");
         swapButton = <HTMLButtonElement>document.getElementById("swapButton");
         playWordButton = <HTMLButtonElement>document.getElementById("playWordButton");
+        scoreArea = <HTMLDivElement>document.getElementById("score")
         gameArea = <HTMLDivElement>document.getElementById("GameArea");
         wordArea = <HTMLDivElement>document.getElementById("WordArea");
         letterArea = <HTMLDivElement>document.getElementById("LetterArea");
         playButton.addEventListener("click", hndStart);
         swapButton.addEventListener("click", hndSwapLetters);
         playWordButton.addEventListener("click", hndPlayWord);
+
+        // Lade die Wortliste einmalig
+        germanWords = await loadWordList();
     }
 
     function hndStart() {
         body.removeChild(startOverlay);
+        Scorelist = new Score(1)
         fillDeck();
         selectLetters(8);
         createContainers();
@@ -102,40 +122,59 @@ namespace FrenzyWords {
         }
         selectedLetters = newSelectedLetters;
     }
-    function createContainers(){
-      selectedLetters.forEach(Letter => {
-        containers.push(new Container(Letter))
-      });
-    }
-    function hndSwapLetters() {
-        lettersPlayed = []
-      let swapAmount: number = 0;
-      // Durchlaufe rückwärts, um Elemente sicher zu entfernen
-      for (let i = containers.length - 1; i >= 0; i--) {
-          if (containers[i].selected) {
-              // Hier füge deine Logik ein, um das DOM-Element zu entfernen
-              let containerToRemove = containers[i];
-              // Beispiel für das Entfernen des DOM-Elements
-              containerToRemove.div.parentNode?.removeChild(containerToRemove.div);
-              
-              // Entferne das Element aus dem Array
-              containers.splice(i, 1);
-              swapAmount++; 
-          }
-      }
-      selectLetters(swapAmount)
-      createContainers();
-  }
-  
-  
-  
 
-    function hndPlayWord() {
-        let playedWord: string = ""
-            for (let index = 0; index < lettersPlayed.length; index++) {
-                playedWord += lettersPlayed[index].letter.indicator
-                }
-            lettersPlayed = []
-            console.log(playedWord)
+    function createContainers() {
+        selectedLetters.forEach(letter => {
+            containers.push(new Container(letter));
+        });
     }
-}
+
+    function hndSwapLetters() {
+        lettersPlayed = [];
+        let swapAmount: number = 0;
+        // Durchlaufe rückwärts, um Elemente sicher zu entfernen
+        for (let i = containers.length - 1; i >= 0; i--) {
+            if (containers[i].selected) {
+                // Hier füge deine Logik ein, um das DOM-Element zu entfernen
+                let containerToRemove = containers[i];
+                // Beispiel für das Entfernen des DOM-Elements
+                containerToRemove.div.parentNode?.removeChild(containerToRemove.div);
+                
+                // Entferne das Element aus dem Array
+                containers.splice(i, 1);
+                swapAmount++;
+            }
+        }
+        selectLetters(swapAmount);
+        createContainers();
+    }
+
+    async function hndPlayWord() {
+        let playedWord: string = "";
+        for (let index = 0; index < lettersPlayed.length; index++) {
+            playedWord += lettersPlayed[index].letter.indicator;
+        }
+    
+        const isGerman = await isGermanWord(playedWord);
+        console.log(`${playedWord} ist ${isGerman ? "korrekt" : "nicht korrekt"}`);
+        if (isGerman&&!Scorelist.scoring) {
+            Scorelist.scoring = true;
+            await hndCorrectWord(lettersPlayed);
+            // Füge hier das Delay und den Aufruf von hndSwapLetters ein
+            setTimeout(() => {
+                hndSwapLetters();
+                transitioning= false
+                Scorelist.scoring = false;
+            }, selectLetters.length*1333); // Delay von 1000 Millisekunden (1 Sekunde)
+        } else {
+
+        }
+    }
+    
+    async function hndCorrectWord(_words: Container[]) {
+        for (let index = 0; index < _words.length; index++) {
+            const container = _words[index];
+            await container.hndCorrect();
+        }
+    }
+    }

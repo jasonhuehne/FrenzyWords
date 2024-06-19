@@ -7,6 +7,17 @@ var FrenzyWords;
     let playButton;
     let swapButton;
     let playWordButton;
+    let germanWords;
+    // Überprüfung Wort deutsch
+    async function loadWordList() {
+        const response = await fetch('https://gist.githubusercontent.com/MarvinJWendt/2f4f4154b8ae218600eb091a5706b5f4/raw/36b70dd6be330aa61cd4d4cdfda6234dcb0b8784/wordlist-german.txt');
+        const text = await response.text();
+        const wordsArray = text.split(/\r?\n/).map(word => word.toLowerCase()); // Wörter in Kleinbuchstaben umwandeln
+        return new Set(wordsArray);
+    }
+    async function isGermanWord(word) {
+        return germanWords.has(word.toLowerCase()); // Eingabewort in Kleinbuchstaben umwandeln
+    }
     FrenzyWords.lettersPlayed = [];
     let containers = [];
     FrenzyWords.transitioning = false;
@@ -44,21 +55,25 @@ var FrenzyWords;
     ];
     FrenzyWords.selectedLetters = [];
     FrenzyWords.deck = [];
-    function hndLoad() {
+    async function hndLoad() {
         body = document.querySelector("body");
         startOverlay = document.getElementById("StartOverlay");
         playButton = document.getElementById("playButton");
         swapButton = document.getElementById("swapButton");
         playWordButton = document.getElementById("playWordButton");
+        FrenzyWords.scoreArea = document.getElementById("score");
         FrenzyWords.gameArea = document.getElementById("GameArea");
         FrenzyWords.wordArea = document.getElementById("WordArea");
         FrenzyWords.letterArea = document.getElementById("LetterArea");
         playButton.addEventListener("click", hndStart);
         swapButton.addEventListener("click", hndSwapLetters);
         playWordButton.addEventListener("click", hndPlayWord);
+        // Lade die Wortliste einmalig
+        germanWords = await loadWordList();
     }
     function hndStart() {
         body.removeChild(startOverlay);
+        FrenzyWords.Scorelist = new FrenzyWords.Score(1);
         fillDeck();
         selectLetters(8);
         createContainers();
@@ -90,8 +105,8 @@ var FrenzyWords;
         FrenzyWords.selectedLetters = newSelectedLetters;
     }
     function createContainers() {
-        FrenzyWords.selectedLetters.forEach(Letter => {
-            containers.push(new FrenzyWords.Container(Letter));
+        FrenzyWords.selectedLetters.forEach(letter => {
+            containers.push(new FrenzyWords.Container(letter));
         });
     }
     function hndSwapLetters() {
@@ -112,13 +127,31 @@ var FrenzyWords;
         selectLetters(swapAmount);
         createContainers();
     }
-    function hndPlayWord() {
+    async function hndPlayWord() {
         let playedWord = "";
         for (let index = 0; index < FrenzyWords.lettersPlayed.length; index++) {
             playedWord += FrenzyWords.lettersPlayed[index].letter.indicator;
         }
-        FrenzyWords.lettersPlayed = [];
-        console.log(playedWord);
+        const isGerman = await isGermanWord(playedWord);
+        console.log(`${playedWord} ist ${isGerman ? "korrekt" : "nicht korrekt"}`);
+        if (isGerman && !FrenzyWords.Scorelist.scoring) {
+            FrenzyWords.Scorelist.scoring = true;
+            await hndCorrectWord(FrenzyWords.lettersPlayed);
+            // Füge hier das Delay und den Aufruf von hndSwapLetters ein
+            setTimeout(() => {
+                hndSwapLetters();
+                FrenzyWords.transitioning = false;
+                FrenzyWords.Scorelist.scoring = false;
+            }, selectLetters.length * 1333); // Delay von 1000 Millisekunden (1 Sekunde)
+        }
+        else {
+        }
+    }
+    async function hndCorrectWord(_words) {
+        for (let index = 0; index < _words.length; index++) {
+            const container = _words[index];
+            await container.hndCorrect();
+        }
     }
 })(FrenzyWords || (FrenzyWords = {}));
 //# sourceMappingURL=main.js.map
