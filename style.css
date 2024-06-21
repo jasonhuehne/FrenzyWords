@@ -196,6 +196,13 @@ button:hover {
     cursor: pointer;
     rotate: 2deg;
 }
+.particle-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none; /* Damit das Canvas keine Mausklicks abfängt */
+    z-index: 100; /* Sicherstellen, dass das Canvas über dem div liegt */
+}
 #LetterArea {
     position: absolute;
     top: 60%;

@@ -18,6 +18,7 @@ namespace FrenzyWords {
     let doubleShortActive: boolean = false;
     let doubleDouble: HTMLButtonElement;
     export let doubleDoubleActive: boolean = false;
+    
     let plusOne: HTMLButtonElement;
     let plusOneActive: boolean = false;
     let plusTwo: HTMLButtonElement;
@@ -36,7 +37,6 @@ namespace FrenzyWords {
         return new Set(wordsArray);
     }
 
-    
     async function isGermanWord(word: string): Promise<boolean> {
         return germanWords.has(word.toLowerCase()); // Eingabewort in Kleinbuchstaben umwandeln
     }
@@ -231,6 +231,7 @@ namespace FrenzyWords {
     }
     let playedWord: string = "";
     let lastPlayed: string = "";
+    export let doubleTrue: boolean = false;
     async function hndPlayWord() {
         playedWord = ""
         console.log(playedWord)
@@ -244,8 +245,10 @@ namespace FrenzyWords {
             const hasDoubles = await hasDoubleLetter(playedWord)
             let delay: number
             if (hasDoubles.hasDoubleLetters && doubleDoubleActive){
+                doubleTrue = true;
                 delay = 1300
             } else {
+                doubleTrue = false;
                 delay = 1000
             }
             Scorelist.scoring = true;

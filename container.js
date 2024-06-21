@@ -145,6 +145,7 @@ var FrenzyWords;
                     this.div.style.transition = "transform 123ms ease";
                     this.div.style.transform = "rotate(-15deg) scale(1.05)";
                 });
+                await startParticleAnimation(this.div);
                 await new Promise(resolve => {
                     const reverseFancyTransitionEndHandler = (event) => {
                         if (event.target === this.div && event.propertyName === "transform") {
@@ -193,7 +194,7 @@ var FrenzyWords;
                 this.spanValue.addEventListener('transitionend', resolve, { once: true });
             });
             // Add the score
-            if (FrenzyWords.doubleDoubleActive) {
+            if (FrenzyWords.doubleDoubleActive && FrenzyWords.doubleTrue) {
                 FrenzyWords.Scorelist.add(parseInt(this.spanValue.innerHTML) * 2);
             }
             else {
@@ -202,5 +203,44 @@ var FrenzyWords;
         }
     }
     FrenzyWords.Container = Container;
+    async function startParticleAnimation(div) {
+        const particleCanvas = document.getElementById('particleCanvas');
+        const ctx = particleCanvas.getContext('2d');
+        // Canvas-Position auf die des div anpassen
+        const rect = div.getBoundingClientRect();
+        particleCanvas.style.left = rect.left + 'px';
+        particleCanvas.style.top = rect.top + 'px';
+        particleCanvas.width = rect.width;
+        particleCanvas.height = rect.height;
+        // Partikelanimation
+        const particles = [];
+        const particleCount = 20;
+        for (let i = 0; i < particleCount; i++) {
+            particles.push({
+                x: particleCanvas.width / 2,
+                y: particleCanvas.height / 2,
+                radius: Math.random() * 8 + 2,
+                color: '#FF0000',
+                speedX: Math.random() * 6 - 3,
+                speedY: Math.random() * 6 - 3
+            });
+        }
+        async function animateParticles() {
+            FrenzyWords.transitioning = true;
+            for (let frame = 0; frame < 60; frame++) {
+                ctx.clearRect(0, 0, particleCanvas.width, particleCanvas.height);
+                particles.forEach(particle => {
+                    particle.x += particle.speedX;
+                    particle.y += particle.speedY;
+                    ctx.beginPath();
+                    ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = particle.color;
+                    ctx.fill();
+                });
+                await new Promise(resolve => setTimeout(resolve, 16));
+            }
+        }
+        await animateParticles();
+    }
 })(FrenzyWords || (FrenzyWords = {}));
 //# sourceMappingURL=container.js.map

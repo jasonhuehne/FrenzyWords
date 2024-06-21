@@ -219,6 +219,7 @@ var FrenzyWords;
     }
     let playedWord = "";
     let lastPlayed = "";
+    FrenzyWords.doubleTrue = false;
     async function hndPlayWord() {
         playedWord = "";
         console.log(playedWord);
@@ -231,9 +232,11 @@ var FrenzyWords;
             const hasDoubles = await hasDoubleLetter(playedWord);
             let delay;
             if (hasDoubles.hasDoubleLetters && FrenzyWords.doubleDoubleActive) {
+                FrenzyWords.doubleTrue = true;
                 delay = 1300;
             }
             else {
+                FrenzyWords.doubleTrue = false;
                 delay = 1000;
             }
             FrenzyWords.Scorelist.scoring = true;
