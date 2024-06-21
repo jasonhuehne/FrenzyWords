@@ -126,65 +126,105 @@ namespace FrenzyWords {
         async hndCorrect() {
             transitioning = true;
             this.div.style.transition = "background-color 500ms ease-in, color 300ms ease, box-shadow 300ms ease, transform 300ms, opacity 300ms ease-out";
-            if (doubleDoubleActive && this.fancy){
+        
+            if (doubleDoubleActive && this.fancy) {
                 this.div.style.backgroundColor = "#F4F002";
             } else {
                 this.div.style.backgroundColor = "#11d111";
-
+            }
+        
+            this.div.style.boxShadow = "none";
+            this.spanValue.style.color = "black";
+        
+            // Wait for the background and color transitions to end
+            await new Promise(resolve => {
+                const transitionEndHandler = (event) => {
+                    if (event.target === this.div && (event.propertyName === "background-color" || event.propertyName === "color")) {
+                        this.div.removeEventListener('transitionend', transitionEndHandler);
+                        resolve();
+                    }
+                };
+                this.div.addEventListener('transitionend', transitionEndHandler);
+            });
+        
+            // Calculate the center of the scoreRect
+            const scoreRect = Scorelist.scoreRect;
+            const targetCenterX = scoreRect.left + scoreRect.width / 2;
+            const targetCenterY = scoreRect.top + scoreRect.height / 2;
+        
+            // Get the current position of the spanValue
+            const currentRect = this.spanValue.getBoundingClientRect();
+            const currentCenterX = currentRect.left + currentRect.width / 2;
+            const currentCenterY = currentRect.top + currentRect.height / 2;
+        
+            // Calculate the translation values
+            const translateX = targetCenterX - currentCenterX;
+            const translateY = targetCenterY - currentCenterY;
+        
+            // Set up the transformation to move spanValue to the center of scoreRect
+            this.spanValue.style.transition = 'transform 0.3s ease';
+            this.spanValue.style.transform = `translate(${translateX}px, ${translateY}px)`;
+            this.div.style.transform = "rotate(0deg)";
+        
+            // Wait for the transform transition to end
+            await new Promise(resolve => {
+                this.spanValue.addEventListener('transitionend', resolve, { once: true });
+            });
+        
+            // After the transform transition ends, fade out the spanValue
+            this.spanValue.style.transition = "opacity 300ms";
+            this.spanValue.style.opacity = "0";
+        
+            // Wait for the opacity transition to end
+            await new Promise(resolve => {
+                this.spanValue.addEventListener('transitionend', resolve, { once: true });
+            });
+        
+            // Add the score
+            if (doubleDoubleActive) {
+                Scorelist.add(parseInt(this.spanValue.innerHTML) * 2);
+            } else {
+                Scorelist.add(parseInt(this.spanValue.innerHTML));
+            }
+        
+            // Handle fancy transition if needed
+            if (this.fancy && doubleDoubleActive) {
+                await new Promise(resolve => {
+                    const fancyTransitionEndHandler = (event) => {
+                        if (event.target === this.div && event.propertyName === "transform") {
+                            this.div.removeEventListener('transitionend', fancyTransitionEndHandler);
+                            resolve();
+                        }
+                    };
+                    this.div.addEventListener('transitionend', fancyTransitionEndHandler);
+                    this.div.style.transition = "transform 123ms ease";
+                    this.div.style.transform = "rotate(-15deg) scale(1.05)";
+                });
+                await new Promise(resolve => {
+                    const reverseFancyTransitionEndHandler = (event) => {
+                        if (event.target === this.div && event.propertyName === "transform") {
+                            this.div.removeEventListener('transitionend', reverseFancyTransitionEndHandler);
+                            resolve();
+                        }
+                    };
+                    this.div.addEventListener('transitionend', reverseFancyTransitionEndHandler);
+                    this.div.style.transform = "rotate(15deg)";
+                });
+                await new Promise(resolve => {
+                    const reverseFancyTransitionEndHandler = (event) => {
+                        if (event.target === this.div && event.propertyName === "transform") {
+                            this.div.removeEventListener('transitionend', reverseFancyTransitionEndHandler);
+                            resolve();
+                        }
+                    };
+                    this.div.addEventListener('transitionend', reverseFancyTransitionEndHandler);
+                    this.div.style.transform = "rotate(0deg)";
+                });
             }
 
-            this.div.style.boxShadow = "none"
-            this.spanValue.style.color = "black";
-            
-            // Listen for the end of the background and color transition
-            this.div.addEventListener('transitionend', () => {
-                // Calculate the center of the scoreRect
-                const scoreRect = Scorelist.scoreRect;
-                const targetCenterX = scoreRect.left + scoreRect.width / 2;
-                const targetCenterY = scoreRect.top + scoreRect.height / 2;
-        
-                // Get the current position of the spanValue
-                const currentRect = this.spanValue.getBoundingClientRect();
-                const currentCenterX = currentRect.left + currentRect.width / 2;
-                const currentCenterY = currentRect.top + currentRect.height / 2;
-        
-                // Calculate the translation values
-                const translateX = targetCenterX - currentCenterX;
-                const translateY = targetCenterY - currentCenterY;
-        
-                // Set up the transformation to move spanValue to the center of scoreRect
-                this.spanValue.style.transition = 'transform 0.3s ease';
-                this.spanValue.style.transform = `translate(${translateX}px, ${translateY}px)`;
-                this.div.style.transform = "rotate(0deg)"
-                // Listen for the end of the transform transition
-                this.spanValue.addEventListener('transitionend', () => {
-                    // After the transform transition ends, fade out the spanValue
-                    this.spanValue.style.transition = "opacity 300ms";
-                    this.spanValue.style.opacity = "0";
-                    if (doubleDoubleActive){                    Scorelist.add(parseInt(this.spanValue.innerHTML)*2) 
-                    } 
-                else {
-                        Scorelist.add(parseInt(this.spanValue.innerHTML))
-                    }
-                    if (this.fancy && doubleDoubleActive){
-                        this.div.addEventListener('transitionend', () => {
-                        this.div.style.transform = "rotate(720deg) scale(1.05)"
-                        this.div.addEventListener('transitionend', () => {
-                            }, {once: true})
-                        }, {once: true});
-                        return new Promise(resolve => setTimeout(resolve, 300))
-                    } else {
-                        this.div.addEventListener('transitionend', () => {
-                            }, {once: true})
-
-                        return new Promise(resolve => setTimeout(resolve, 300))
-                    }
-                }, { once: true });
-            }, { once: true });
-            
-            // Return a promise that resolves after the initial transition (background and color) ends
-            ;
         }
+        
+        
         
         
 
