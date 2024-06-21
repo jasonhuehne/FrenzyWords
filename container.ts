@@ -253,12 +253,12 @@ namespace FrenzyWords {
         particleCanvas.width = canvasWidth;
         particleCanvas.height = canvasHeight;
     
-        // Canvas dem div hinzufügen
-        document.body.appendChild(particleCanvas); // Fügt das Canvas dem Body hinzu, damit es einen größeren Bereich abdecken kann
+        // Canvas dem body hinzufügen
+        document.body.appendChild(particleCanvas); 
     
         // Partikelanzahl und Eigenschaften
         const particles = [];
-        const particleCount = 20;
+        const particleCount = 50;
     
         for (let i = 0; i < particleCount; i++) {
             particles.push({
@@ -266,8 +266,8 @@ namespace FrenzyWords {
                 y: particleCanvas.height / 2, // Startposition Y
                 radius: Math.random() * 5 + 1,  // Radius zwischen 1 und 6
                 color: '#f4b302',  // Farbe der Partikel (hier gelb)
-                speedX: Math.random() * 6 - 3 ,  // Geschwindigkeit in X-Richtung
-                speedY: Math.random() * 6 - 3 ,  // Geschwindigkeit in Y-Richtung
+                speedX: Math.random() * 6 - 3,  // Geschwindigkeit in X-Richtung
+                speedY: Math.random() * 6 - 3,  // Geschwindigkeit in Y-Richtung
                 opacity: 1  // Anfangsopazität
             });
         }
@@ -292,10 +292,14 @@ namespace FrenzyWords {
     
                 await new Promise(resolve => requestAnimationFrame(resolve));  // Nächster Frame
             }
+    
+            // Nach der Animation Canvas wieder entfernen
+            particleCanvas.remove();
         }
     
         await animateParticles();
     }
+    
     
     
     
