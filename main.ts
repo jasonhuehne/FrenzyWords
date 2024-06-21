@@ -17,7 +17,7 @@ namespace FrenzyWords {
     let doubleShort: HTMLButtonElement;
     let doubleShortActive: boolean = false;
     let doubleDouble: HTMLButtonElement;
-    let doubleDoubleActive: boolean = true;
+    export let doubleDoubleActive: boolean = false;
     let plusOne: HTMLButtonElement;
     let plusOneActive: boolean = false;
     let plusTwo: HTMLButtonElement;
@@ -115,15 +115,19 @@ namespace FrenzyWords {
         shopButton.addEventListener("click", function(event) {
             event.stopPropagation();
             if (!shopOpen) {
-                const scoreSet: HTMLElement =<HTMLElement>document.getElementById("score")
-                scoreSet.style.top = "5%";
-                scoreSet.style.transform = "none";
-                shopButton.innerHTML = "X"
+                const scoreSet = <HTMLElement>document.getElementById("score");
+            
+                // Batch style changes
+                scoreSet.style.cssText = "top: 5%; transform: none;";
+            
+                shopButton.innerHTML = "X";
                 shop.style.display = "block";
-                scoreArea
                 shopOpen = true;
+            
+                // Add event listener to handle clicks outside the shop
                 document.addEventListener("click", closeShopOnOutsideClick);
-            } else {
+            }
+             else {
                 Scorelist.scoreSpan.style.top = "45%"
                 shopButton.innerHTML = "SHOP"
                 shop.style.display = "none";
@@ -133,10 +137,10 @@ namespace FrenzyWords {
         });
         doubleDouble.addEventListener('click', () => {
             const nextElement = doubleDouble.nextElementSibling;
-            if (nextElement) {const amount = parseFloat(nextElement.innerHTML);Scorelist.remove(amount); doubleDoubleActive = true}})
+            if (nextElement) {const amount = parseFloat(nextElement.innerHTML);console.log(Scorelist.remove(amount));if(Scorelist.remove(amount)){doubleDoubleActive = true}}})
         doubleShort.addEventListener('click', () => {
-                    const nextElement = doubleDouble.nextElementSibling;
-                    if (nextElement) {const amount = parseFloat(nextElement.innerHTML);Scorelist.remove(amount); doubleShortActive = true}})
+            const nextElement = doubleDouble.nextElementSibling;
+            if (nextElement) {const amount = parseFloat(nextElement.innerHTML);console.log(Scorelist.remove(amount));if(Scorelist.remove(amount)){doubleDoubleActive = true}}})
 
         function closeShopOnOutsideClick(event: any) {
             if (!shop.contains(event.target) && event.target !== shopButton) {
@@ -225,13 +229,22 @@ namespace FrenzyWords {
         const isGerman = await isGermanWord(playedWord);
         console.log(`${playedWord} ist ${isGerman ? "korrekt" : "nicht korrekt"  }`);
         if (isGerman&&!Scorelist.scoring) {
+            const hasDoubles = await hasDoubleLetter(playedWord)
+            let delay: number
+            if (hasDoubles.hasDoubleLetters && doubleDoubleActive){
+                delay = 1300
+            } else {
+                delay = 1000
+            }
             Scorelist.scoring = true;
             await hndCorrectWord(lettersPlayed);
             setTimeout(() => {
-
+                hndSwapLetters();
                 transitioning= false
                 Scorelist.scoring = false;
-            }, selectLetters.length*3000);
+  
+                 
+            }, selectLetters.length*delay);
         }
     }
     

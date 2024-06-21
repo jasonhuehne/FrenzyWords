@@ -21,13 +21,17 @@ namespace FrenzyWords {
                this.scoreSpan.innerHTML = `${newScore}`
 
             }
-        }
+            }
         remove(_removeAmount: number){
             const oldScore: number = parseInt(this.scoreSpan.innerHTML)
                const newScore: number = oldScore - _removeAmount
                this.score = newScore
-               if (!(this.score <= 0)){
+               if (!(this.score <0)){
                this.scoreSpan.innerHTML = `${newScore}`
+               return true
+               } else {
+                this.score = oldScore
+                return false
                }
         }
         update() {

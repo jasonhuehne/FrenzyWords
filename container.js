@@ -111,12 +111,12 @@ var FrenzyWords;
         }
         async hndCorrect() {
             FrenzyWords.transitioning = true;
-            this.div.style.transition = "background-color 500ms ease-in, color 300ms ease, box-shadow 300ms ease, transform 300ms, opacity 500ms ease-out";
-            if (!this.fancy) {
-                this.div.style.backgroundColor = "#11d111";
+            this.div.style.transition = "background-color 500ms ease-in, color 300ms ease, box-shadow 300ms ease, transform 300ms, opacity 300ms ease-out";
+            if (FrenzyWords.doubleDoubleActive && this.fancy) {
+                this.div.style.backgroundColor = "#F4F002";
             }
             else {
-                this.div.style.backgroundColor = "#F4F002";
+                this.div.style.backgroundColor = "#11d111";
             }
             this.div.style.boxShadow = "none";
             this.spanValue.style.color = "black";
@@ -140,10 +140,15 @@ var FrenzyWords;
                 // Listen for the end of the transform transition
                 this.spanValue.addEventListener('transitionend', () => {
                     // After the transform transition ends, fade out the spanValue
-                    this.spanValue.style.transition = "opacity 500ms";
+                    this.spanValue.style.transition = "opacity 300ms";
                     this.spanValue.style.opacity = "0";
-                    FrenzyWords.Scorelist.add(parseInt(this.spanValue.innerHTML) * 2);
-                    if (this.fancy) {
+                    if (FrenzyWords.doubleDoubleActive) {
+                        FrenzyWords.Scorelist.add(parseInt(this.spanValue.innerHTML) * 2);
+                    }
+                    else {
+                        FrenzyWords.Scorelist.add(parseInt(this.spanValue.innerHTML));
+                    }
+                    if (this.fancy && FrenzyWords.doubleDoubleActive) {
                         this.div.addEventListener('transitionend', () => {
                             this.div.style.transform = "rotate(720deg) scale(1.05)";
                             this.div.addEventListener('transitionend', () => {

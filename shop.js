@@ -27,8 +27,13 @@ var FrenzyWords;
             const oldScore = parseInt(this.scoreSpan.innerHTML);
             const newScore = oldScore - _removeAmount;
             this.score = newScore;
-            if (!(this.score <= 0)) {
+            if (!(this.score < 0)) {
                 this.scoreSpan.innerHTML = `${newScore}`;
+                return true;
+            }
+            else {
+                this.score = oldScore;
+                return false;
             }
         }
         update() {

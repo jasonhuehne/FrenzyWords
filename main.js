@@ -15,7 +15,7 @@ var FrenzyWords;
     let doubleShort;
     let doubleShortActive = false;
     let doubleDouble;
-    let doubleDoubleActive = true;
+    FrenzyWords.doubleDoubleActive = false;
     let plusOne;
     let plusOneActive = false;
     let plusTwo;
@@ -105,12 +105,12 @@ var FrenzyWords;
             event.stopPropagation();
             if (!FrenzyWords.shopOpen) {
                 const scoreSet = document.getElementById("score");
-                scoreSet.style.top = "5%";
-                scoreSet.style.transform = "none";
+                // Batch style changes
+                scoreSet.style.cssText = "top: 5%; transform: none;";
                 shopButton.innerHTML = "X";
                 shop.style.display = "block";
-                FrenzyWords.scoreArea;
                 FrenzyWords.shopOpen = true;
+                // Add event listener to handle clicks outside the shop
                 document.addEventListener("click", closeShopOnOutsideClick);
             }
             else {
@@ -125,16 +125,20 @@ var FrenzyWords;
             const nextElement = doubleDouble.nextElementSibling;
             if (nextElement) {
                 const amount = parseFloat(nextElement.innerHTML);
-                FrenzyWords.Scorelist.remove(amount);
-                doubleDoubleActive = true;
+                console.log(FrenzyWords.Scorelist.remove(amount));
+                if (FrenzyWords.Scorelist.remove(amount)) {
+                    FrenzyWords.doubleDoubleActive = true;
+                }
             }
         });
         doubleShort.addEventListener('click', () => {
             const nextElement = doubleDouble.nextElementSibling;
             if (nextElement) {
                 const amount = parseFloat(nextElement.innerHTML);
-                FrenzyWords.Scorelist.remove(amount);
-                doubleShortActive = true;
+                console.log(FrenzyWords.Scorelist.remove(amount));
+                if (FrenzyWords.Scorelist.remove(amount)) {
+                    FrenzyWords.doubleDoubleActive = true;
+                }
             }
         });
         function closeShopOnOutsideClick(event) {
@@ -217,12 +221,21 @@ var FrenzyWords;
         const isGerman = await isGermanWord(playedWord);
         console.log(`${playedWord} ist ${isGerman ? "korrekt" : "nicht korrekt"}`);
         if (isGerman && !FrenzyWords.Scorelist.scoring) {
+            const hasDoubles = await hasDoubleLetter(playedWord);
+            let delay;
+            if (hasDoubles.hasDoubleLetters && FrenzyWords.doubleDoubleActive) {
+                delay = 1300;
+            }
+            else {
+                delay = 1000;
+            }
             FrenzyWords.Scorelist.scoring = true;
             await hndCorrectWord(FrenzyWords.lettersPlayed);
             setTimeout(() => {
+                hndSwapLetters();
                 FrenzyWords.transitioning = false;
                 FrenzyWords.Scorelist.scoring = false;
-            }, selectLetters.length * 3000);
+            }, selectLetters.length * delay);
         }
     }
     async function hndCorrectWord(_words) {
