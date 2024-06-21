@@ -125,16 +125,19 @@ namespace FrenzyWords {
         }
         async hndCorrect() {
             transitioning = true;
-            this.div.style.transition = "background-color 500ms ease-in, color 300ms ease, box-shadow 300ms ease, transform 300ms, opacity 300ms ease-out";
+            this.div.style.transition = "background-color 300ms ease-out, color 300ms ease, box-shadow 300ms ease, transform 300ms, opacity 300ms ease-out";
         
             if (doubleDoubleActive && this.fancy) {
                 this.div.style.backgroundColor = "#F4F002";
+                this.spanValue.style.color = "#f4b302";
+                this.spanValue.style.textShadow = " #FC0 1px 0 10px;"
             } else {
                 this.div.style.backgroundColor = "#11d111";
+                this.spanValue.style.color = "black";
             }
         
             this.div.style.boxShadow = "none";
-            this.spanValue.style.color = "black";
+
         
             // Wait for the background and color transitions to end
             await new Promise(resolve => {
@@ -146,6 +149,41 @@ namespace FrenzyWords {
                 };
                 this.div.addEventListener('transitionend', transitionEndHandler);
             });
+        
+            // Handle fancy transition if needed
+            if (this.fancy && doubleDoubleActive) {
+                await new Promise(resolve => {
+                    const fancyTransitionEndHandler = (event) => {
+                        if (event.target === this.div && event.propertyName === "transform") {
+                            this.div.removeEventListener('transitionend', fancyTransitionEndHandler);
+                            resolve();
+                        }
+                    };
+                    this.div.addEventListener('transitionend', fancyTransitionEndHandler);
+                    this.div.style.transition = "transform 123ms ease";
+                    this.div.style.transform = "rotate(-15deg) scale(1.05)";
+                });
+                await new Promise(resolve => {
+                    const reverseFancyTransitionEndHandler = (event) => {
+                        if (event.target === this.div && event.propertyName === "transform") {
+                            this.div.removeEventListener('transitionend', reverseFancyTransitionEndHandler);
+                            resolve();
+                        }
+                    };
+                    this.div.addEventListener('transitionend', reverseFancyTransitionEndHandler);
+                    this.div.style.transform = "rotate(15deg)";
+                });
+                await new Promise(resolve => {
+                    const reverseFancyTransitionEndHandler = (event) => {
+                        if (event.target === this.div && event.propertyName === "transform") {
+                            this.div.removeEventListener('transitionend', reverseFancyTransitionEndHandler);
+                            resolve();
+                        }
+                    };
+                    this.div.addEventListener('transitionend', reverseFancyTransitionEndHandler);
+                    this.div.style.transform = "rotate(0deg)";
+                });
+            }
         
             // Calculate the center of the scoreRect
             const scoreRect = Scorelist.scoreRect;
@@ -186,43 +224,8 @@ namespace FrenzyWords {
             } else {
                 Scorelist.add(parseInt(this.spanValue.innerHTML));
             }
-        
-            // Handle fancy transition if needed
-            if (this.fancy && doubleDoubleActive) {
-                await new Promise(resolve => {
-                    const fancyTransitionEndHandler = (event) => {
-                        if (event.target === this.div && event.propertyName === "transform") {
-                            this.div.removeEventListener('transitionend', fancyTransitionEndHandler);
-                            resolve();
-                        }
-                    };
-                    this.div.addEventListener('transitionend', fancyTransitionEndHandler);
-                    this.div.style.transition = "transform 123ms ease";
-                    this.div.style.transform = "rotate(-15deg) scale(1.05)";
-                });
-                await new Promise(resolve => {
-                    const reverseFancyTransitionEndHandler = (event) => {
-                        if (event.target === this.div && event.propertyName === "transform") {
-                            this.div.removeEventListener('transitionend', reverseFancyTransitionEndHandler);
-                            resolve();
-                        }
-                    };
-                    this.div.addEventListener('transitionend', reverseFancyTransitionEndHandler);
-                    this.div.style.transform = "rotate(15deg)";
-                });
-                await new Promise(resolve => {
-                    const reverseFancyTransitionEndHandler = (event) => {
-                        if (event.target === this.div && event.propertyName === "transform") {
-                            this.div.removeEventListener('transitionend', reverseFancyTransitionEndHandler);
-                            resolve();
-                        }
-                    };
-                    this.div.addEventListener('transitionend', reverseFancyTransitionEndHandler);
-                    this.div.style.transform = "rotate(0deg)";
-                });
-            }
-
         }
+        
         
         
         
