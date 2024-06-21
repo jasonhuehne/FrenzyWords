@@ -22,6 +22,14 @@ namespace FrenzyWords {
 
             }
         }
+        remove(_removeAmount: number){
+            const oldScore: number = parseInt(this.scoreSpan.innerHTML)
+               const newScore: number = oldScore - _removeAmount
+               this.score = newScore
+               if (!(this.score <= 0)){
+               this.scoreSpan.innerHTML = `${newScore}`
+               }
+        }
         update() {
 
         }

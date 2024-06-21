@@ -23,6 +23,14 @@ var FrenzyWords;
                 this.scoreSpan.innerHTML = `${newScore}`;
             }
         }
+        remove(_removeAmount) {
+            const oldScore = parseInt(this.scoreSpan.innerHTML);
+            const newScore = oldScore - _removeAmount;
+            this.score = newScore;
+            if (!(this.score <= 0)) {
+                this.scoreSpan.innerHTML = `${newScore}`;
+            }
+        }
         update() {
         }
     }

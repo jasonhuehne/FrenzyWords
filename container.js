@@ -8,6 +8,7 @@ var FrenzyWords;
         spanValue;
         selected;
         rect;
+        fancy;
         constructor(_letter) {
             this.draw(_letter);
         }
@@ -110,9 +111,13 @@ var FrenzyWords;
         }
         async hndCorrect() {
             FrenzyWords.transitioning = true;
-            this.div.style.transition = "background-color 300ms ease, color 300ms ease, box-shadow 300ms ease, transform 300ms, opacity 1000ms ease-out";
-            this.div.style.transform = "rotate(-15deg)";
-            this.div.style.backgroundColor = "#39db34";
+            this.div.style.transition = "background-color 500ms ease-in, color 300ms ease, box-shadow 300ms ease, transform 300ms, opacity 500ms ease-out";
+            if (!this.fancy) {
+                this.div.style.backgroundColor = "#11d111";
+            }
+            else {
+                this.div.style.backgroundColor = "#F4F002";
+            }
             this.div.style.boxShadow = "none";
             this.spanValue.style.color = "black";
             // Listen for the end of the background and color transition
@@ -135,16 +140,26 @@ var FrenzyWords;
                 // Listen for the end of the transform transition
                 this.spanValue.addEventListener('transitionend', () => {
                     // After the transform transition ends, fade out the spanValue
-                    this.spanValue.style.transition = "opacity 0.3s";
+                    this.spanValue.style.transition = "opacity 500ms";
                     this.spanValue.style.opacity = "0";
-                    this.div.style.opacity = "0";
-                    this.div.style.cursor = "auto";
-                    // Add the score to the Scorelist
-                    FrenzyWords.Scorelist.add(parseInt(this.spanValue.innerHTML));
+                    FrenzyWords.Scorelist.add(parseInt(this.spanValue.innerHTML) * 2);
+                    if (this.fancy) {
+                        this.div.addEventListener('transitionend', () => {
+                            this.div.style.transform = "rotate(720deg) scale(1.05)";
+                            this.div.addEventListener('transitionend', () => {
+                            }, { once: true });
+                        }, { once: true });
+                        return new Promise(resolve => setTimeout(resolve, 300));
+                    }
+                    else {
+                        this.div.addEventListener('transitionend', () => {
+                        }, { once: true });
+                        return new Promise(resolve => setTimeout(resolve, 300));
+                    }
                 }, { once: true });
             }, { once: true });
             // Return a promise that resolves after the initial transition (background and color) ends
-            return new Promise(resolve => setTimeout(resolve, 300));
+            ;
         }
     }
     FrenzyWords.Container = Container;

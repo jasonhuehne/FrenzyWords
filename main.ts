@@ -9,6 +9,23 @@ namespace FrenzyWords {
     export let gameArea: HTMLDivElement;
     export let wordArea: HTMLDivElement;
     export let letterArea: HTMLDivElement;
+    export let shopOpen: boolean = false;
+    let shopButton: HTMLButtonElement;
+    let shop: HTMLDivElement;
+    let doubleLong: HTMLButtonElement;
+    let doubleLongActive: boolean = false;
+    let doubleShort: HTMLButtonElement;
+    let doubleShortActive: boolean = false;
+    let doubleDouble: HTMLButtonElement;
+    let doubleDoubleActive: boolean = true;
+    let plusOne: HTMLButtonElement;
+    let plusOneActive: boolean = false;
+    let plusTwo: HTMLButtonElement;
+    let plusTwoActive: boolean = false;
+    let plusThree: HTMLButtonElement;
+    let plusThreeActive: boolean = false;
+    let plusRare: HTMLButtonElement;
+    let plussFour: boolean = false;
     let germanWords: Set<string>;
     export let Scorelist: Score
         // Überprüfung Wort deutsch
@@ -19,9 +36,11 @@ namespace FrenzyWords {
         return new Set(wordsArray);
     }
 
+    
     async function isGermanWord(word: string): Promise<boolean> {
         return germanWords.has(word.toLowerCase()); // Eingabewort in Kleinbuchstaben umwandeln
     }
+ 
 
     export let lettersPlayed: Container[] = [];
     let containers: Container[] = [];
@@ -79,10 +98,55 @@ namespace FrenzyWords {
         gameArea = <HTMLDivElement>document.getElementById("GameArea");
         wordArea = <HTMLDivElement>document.getElementById("WordArea");
         letterArea = <HTMLDivElement>document.getElementById("LetterArea");
-        playButton.addEventListener("click", hndStart);
-        swapButton.addEventListener("click", hndSwapLetters);
-        playWordButton.addEventListener("click", hndPlayWord);
+        shopButton = <HTMLButtonElement> document.getElementById("shopButton")
+        shop =<HTMLDivElement>document.getElementById("Shop")    
+        doubleLong= <HTMLButtonElement> document.getElementById("doubeLong") 
+        doubleShort= <HTMLButtonElement>document.getElementById("doubleShort")  
+        doubleDouble=<HTMLButtonElement>document.getElementById("doubleDouble")  
+        plusOne= <HTMLButtonElement>  document.getElementById("plusOne")
+        plusTwo= <HTMLButtonElement>  document.getElementById("plusTwo")
+        plusThree= <HTMLButtonElement>  document.getElementById("plusThree")
+        plusRare= <HTMLButtonElement>  document.getElementById("plusRare")
+        playButton.addEventListener("click", function(){if(!shopOpen){hndStart()}});
+        swapButton.addEventListener("click", function(){if(!shopOpen){hndSwapLetters()}});
+        playWordButton.addEventListener("click", function(){if(!shopOpen){hndPlayWord(), lastPlayed = playedWord}});
 
+        shop.style.display = "none"
+        shopButton.addEventListener("click", function(event) {
+            event.stopPropagation();
+            if (!shopOpen) {
+                const scoreSet: HTMLElement =<HTMLElement>document.getElementById("score")
+                scoreSet.style.top = "5%";
+                scoreSet.style.transform = "none";
+                shopButton.innerHTML = "X"
+                shop.style.display = "block";
+                scoreArea
+                shopOpen = true;
+                document.addEventListener("click", closeShopOnOutsideClick);
+            } else {
+                Scorelist.scoreSpan.style.top = "45%"
+                shopButton.innerHTML = "SHOP"
+                shop.style.display = "none";
+                shopOpen = false;
+                document.removeEventListener("click", closeShopOnOutsideClick);
+            }
+        });
+        doubleDouble.addEventListener('click', () => {
+            const nextElement = doubleDouble.nextElementSibling;
+            if (nextElement) {const amount = parseFloat(nextElement.innerHTML);Scorelist.remove(amount); doubleDoubleActive = true}})
+        doubleShort.addEventListener('click', () => {
+                    const nextElement = doubleDouble.nextElementSibling;
+                    if (nextElement) {const amount = parseFloat(nextElement.innerHTML);Scorelist.remove(amount); doubleShortActive = true}})
+
+        function closeShopOnOutsideClick(event: any) {
+            if (!shop.contains(event.target) && event.target !== shopButton) {
+                    Scorelist.scoreSpan.style.top = "45%"
+                    shopButton.innerHTML = "SHOP"
+                shop.style.display = "none";
+                shopOpen = false;
+                document.removeEventListener("click", closeShopOnOutsideClick);
+            }
+        }
         // Lade die Wortliste einmalig
         germanWords = await loadWordList();
     }
@@ -90,6 +154,7 @@ namespace FrenzyWords {
     function hndStart() {
         body.removeChild(startOverlay);
         Scorelist = new Score(1)
+        shopButton.style.display = ("flex");
         fillDeck();
         selectLetters(8);
         createContainers();
@@ -148,33 +213,60 @@ namespace FrenzyWords {
         selectLetters(swapAmount);
         createContainers();
     }
-
+    let playedWord: string = "";
+    let lastPlayed: string = "";
     async function hndPlayWord() {
-        let playedWord: string = "";
+        playedWord = ""
+        console.log(playedWord)
         for (let index = 0; index < lettersPlayed.length; index++) {
             playedWord += lettersPlayed[index].letter.indicator;
         }
     
         const isGerman = await isGermanWord(playedWord);
-        console.log(`${playedWord} ist ${isGerman ? "korrekt" : "nicht korrekt"}`);
+        console.log(`${playedWord} ist ${isGerman ? "korrekt" : "nicht korrekt"  }`);
         if (isGerman&&!Scorelist.scoring) {
             Scorelist.scoring = true;
             await hndCorrectWord(lettersPlayed);
-            // Füge hier das Delay und den Aufruf von hndSwapLetters ein
             setTimeout(() => {
-                hndSwapLetters();
+
                 transitioning= false
                 Scorelist.scoring = false;
-            }, selectLetters.length*1333); // Delay von 1000 Millisekunden (1 Sekunde)
-        } else {
-
+            }, selectLetters.length*3000);
         }
     }
     
     async function hndCorrectWord(_words: Container[]) {
         for (let index = 0; index < _words.length; index++) {
+            const hasDouble = await hasDoubleLetter(lastPlayed)
+            console.log(hasDouble.letters)
+                if (_words[index].letter.indicator == hasDouble.letters[0]){
+                    _words[index].fancy = true;
+                }
             const container = _words[index];
             await container.hndCorrect();
         }
     }
+    async function hasDoubleLetter(word: string): Promise<{ hasDoubleLetters: boolean, letters: string[] }> {
+        let letters: string[] = [];
+    
+        // Regulärer Ausdruck, um Doppelbuchstaben zu finden
+        let regex = /([a-zA-Z])\1/g;
+        let match;
+    
+        // Mit regex.exec alle Treffer finden und die doppelten Buchstaben speichern
+        while ((match = regex.exec(word)) !== null) {
+            // Speichern des doppelten Buchstabens
+            letters.push(match[1]);
+        }
+    
+        // Prüfen, ob Doppelbuchstaben gefunden wurden
+        let hasDoubleLetters = letters.length > 0;
+    
+        return { hasDoubleLetters, letters };
+    }
+    
+    // Beispielaufruf
+    hasDoubleLetter("hello").then(result => console.log(result)); // { hasDoubleLetters: true, letters: ['l'] }
+    hasDoubleLetter("test").then(result => console.log(result));  // { hasDoubleLetters: false, letters: [] }
+    
     }

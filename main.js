@@ -7,6 +7,23 @@ var FrenzyWords;
     let playButton;
     let swapButton;
     let playWordButton;
+    FrenzyWords.shopOpen = false;
+    let shopButton;
+    let shop;
+    let doubleLong;
+    let doubleLongActive = false;
+    let doubleShort;
+    let doubleShortActive = false;
+    let doubleDouble;
+    let doubleDoubleActive = true;
+    let plusOne;
+    let plusOneActive = false;
+    let plusTwo;
+    let plusTwoActive = false;
+    let plusThree;
+    let plusThreeActive = false;
+    let plusRare;
+    let plussFour = false;
     let germanWords;
     // Überprüfung Wort deutsch
     async function loadWordList() {
@@ -65,15 +82,77 @@ var FrenzyWords;
         FrenzyWords.gameArea = document.getElementById("GameArea");
         FrenzyWords.wordArea = document.getElementById("WordArea");
         FrenzyWords.letterArea = document.getElementById("LetterArea");
-        playButton.addEventListener("click", hndStart);
-        swapButton.addEventListener("click", hndSwapLetters);
-        playWordButton.addEventListener("click", hndPlayWord);
+        shopButton = document.getElementById("shopButton");
+        shop = document.getElementById("Shop");
+        doubleLong = document.getElementById("doubeLong");
+        doubleShort = document.getElementById("doubleShort");
+        doubleDouble = document.getElementById("doubleDouble");
+        plusOne = document.getElementById("plusOne");
+        plusTwo = document.getElementById("plusTwo");
+        plusThree = document.getElementById("plusThree");
+        plusRare = document.getElementById("plusRare");
+        playButton.addEventListener("click", function () { if (!FrenzyWords.shopOpen) {
+            hndStart();
+        } });
+        swapButton.addEventListener("click", function () { if (!FrenzyWords.shopOpen) {
+            hndSwapLetters();
+        } });
+        playWordButton.addEventListener("click", function () { if (!FrenzyWords.shopOpen) {
+            hndPlayWord(), lastPlayed = playedWord;
+        } });
+        shop.style.display = "none";
+        shopButton.addEventListener("click", function (event) {
+            event.stopPropagation();
+            if (!FrenzyWords.shopOpen) {
+                const scoreSet = document.getElementById("score");
+                scoreSet.style.top = "5%";
+                scoreSet.style.transform = "none";
+                shopButton.innerHTML = "X";
+                shop.style.display = "block";
+                FrenzyWords.scoreArea;
+                FrenzyWords.shopOpen = true;
+                document.addEventListener("click", closeShopOnOutsideClick);
+            }
+            else {
+                FrenzyWords.Scorelist.scoreSpan.style.top = "45%";
+                shopButton.innerHTML = "SHOP";
+                shop.style.display = "none";
+                FrenzyWords.shopOpen = false;
+                document.removeEventListener("click", closeShopOnOutsideClick);
+            }
+        });
+        doubleDouble.addEventListener('click', () => {
+            const nextElement = doubleDouble.nextElementSibling;
+            if (nextElement) {
+                const amount = parseFloat(nextElement.innerHTML);
+                FrenzyWords.Scorelist.remove(amount);
+                doubleDoubleActive = true;
+            }
+        });
+        doubleShort.addEventListener('click', () => {
+            const nextElement = doubleDouble.nextElementSibling;
+            if (nextElement) {
+                const amount = parseFloat(nextElement.innerHTML);
+                FrenzyWords.Scorelist.remove(amount);
+                doubleShortActive = true;
+            }
+        });
+        function closeShopOnOutsideClick(event) {
+            if (!shop.contains(event.target) && event.target !== shopButton) {
+                FrenzyWords.Scorelist.scoreSpan.style.top = "45%";
+                shopButton.innerHTML = "SHOP";
+                shop.style.display = "none";
+                FrenzyWords.shopOpen = false;
+                document.removeEventListener("click", closeShopOnOutsideClick);
+            }
+        }
         // Lade die Wortliste einmalig
         germanWords = await loadWordList();
     }
     function hndStart() {
         body.removeChild(startOverlay);
         FrenzyWords.Scorelist = new FrenzyWords.Score(1);
+        shopButton.style.display = ("flex");
         fillDeck();
         selectLetters(8);
         createContainers();
@@ -127,8 +206,11 @@ var FrenzyWords;
         selectLetters(swapAmount);
         createContainers();
     }
+    let playedWord = "";
+    let lastPlayed = "";
     async function hndPlayWord() {
-        let playedWord = "";
+        playedWord = "";
+        console.log(playedWord);
         for (let index = 0; index < FrenzyWords.lettersPlayed.length; index++) {
             playedWord += FrenzyWords.lettersPlayed[index].letter.indicator;
         }
@@ -137,21 +219,39 @@ var FrenzyWords;
         if (isGerman && !FrenzyWords.Scorelist.scoring) {
             FrenzyWords.Scorelist.scoring = true;
             await hndCorrectWord(FrenzyWords.lettersPlayed);
-            // Füge hier das Delay und den Aufruf von hndSwapLetters ein
             setTimeout(() => {
-                hndSwapLetters();
                 FrenzyWords.transitioning = false;
                 FrenzyWords.Scorelist.scoring = false;
-            }, selectLetters.length * 1333); // Delay von 1000 Millisekunden (1 Sekunde)
-        }
-        else {
+            }, selectLetters.length * 3000);
         }
     }
     async function hndCorrectWord(_words) {
         for (let index = 0; index < _words.length; index++) {
+            const hasDouble = await hasDoubleLetter(lastPlayed);
+            console.log(hasDouble.letters);
+            if (_words[index].letter.indicator == hasDouble.letters[0]) {
+                _words[index].fancy = true;
+            }
             const container = _words[index];
             await container.hndCorrect();
         }
     }
+    async function hasDoubleLetter(word) {
+        let letters = [];
+        // Regulärer Ausdruck, um Doppelbuchstaben zu finden
+        let regex = /([a-zA-Z])\1/g;
+        let match;
+        // Mit regex.exec alle Treffer finden und die doppelten Buchstaben speichern
+        while ((match = regex.exec(word)) !== null) {
+            // Speichern des doppelten Buchstabens
+            letters.push(match[1]);
+        }
+        // Prüfen, ob Doppelbuchstaben gefunden wurden
+        let hasDoubleLetters = letters.length > 0;
+        return { hasDoubleLetters, letters };
+    }
+    // Beispielaufruf
+    hasDoubleLetter("hello").then(result => console.log(result)); // { hasDoubleLetters: true, letters: ['l'] }
+    hasDoubleLetter("test").then(result => console.log(result)); // { hasDoubleLetters: false, letters: [] }
 })(FrenzyWords || (FrenzyWords = {}));
 //# sourceMappingURL=main.js.map

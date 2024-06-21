@@ -21,6 +21,46 @@ body {
         margin: 0;
         background-color: #f0f0f0;
 }
+#Shop {
+    display: hidden;
+    position: absolute;
+    width: 50%;
+    height: 60%;
+    top: 45%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 2em;
+    background-color: #7e7e7e;
+    z-index: 9;
+}
+#Shop h2 {
+    color: white;
+    text-decoration: underline;
+    margin-bottom: 5%;
+    text-align: center;
+}
+#Shop h3 {
+    color: white;
+    padding: 0%;
+}
+#Shop h4 {
+    margin-block-end: 0em;
+    font-size: 3em;
+    color: white;
+    padding: 0%;
+}
+#close {
+    margin-bottom: 5em;
+border: 5px solid #6fc6ff;
+}
+#shopButton {
+    display: none;
+    position: absolute;
+    top: 80%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
 h1 {
     font-family: "Atalon";
     font-size: 5em;
@@ -41,30 +81,31 @@ position: fixed;
 top: 40%;
 left: 50%;
 transform: translate(-50%, -50%);}
-#ButtonArea {
+
+#scoreArea {
     z-index: -1;
     position: absolute;
-    top: 80%;
+    top: 45%;
     left: 50%;
     transform: translate(-50%, -50%);
     display: flex;
-    gap: 5em;
+    gap: 10em;
 }
-#ButtonArea button {
+button {
     background-color: #acacac;
     font-size: 1.5em;
     font-family: 'Rudiment';
     font-weight: bold;
     border: none;
     padding: 0.5em;
-    padding-left: 3em;
-    padding-right: 3em;
+    padding-left: 2em;
+    padding-right: 2em;
     border-radius: 2em;
     cursor: pointer;
     transition: all 123ms;
     letter-spacing: 0.2em;
 }
-#ButtonArea button:hover { 
+button:hover { 
     background-color: #7e7e7e;
         transform: scale(1.05);
         filter: invert(100%);
@@ -170,4 +211,18 @@ opacity: 0.6;
 }
 .hidden {
     display: none;
+}
+.buyButtons1{
+    margin-bottom: 10%;
+    margin-left: 4em;
+    margin-right: 4em;
+    gap: 1em;
+    columns: 3;
+}
+.buyButtons2{
+    margin-bottom: 10%;
+    margin-left: 4em;
+    margin-right: 4em;
+    gap: 1em;
+    columns: 4;
 }
