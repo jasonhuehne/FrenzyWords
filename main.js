@@ -233,11 +233,9 @@ var FrenzyWords;
             let delay;
             if (hasDoubles.hasDoubleLetters && FrenzyWords.doubleDoubleActive) {
                 FrenzyWords.doubleTrue = true;
-                delay = 1300;
             }
             else {
                 FrenzyWords.doubleTrue = false;
-                delay = 1000;
             }
             FrenzyWords.Scorelist.scoring = true;
             await hndCorrectWord(FrenzyWords.lettersPlayed);
@@ -245,7 +243,7 @@ var FrenzyWords;
                 hndSwapLetters();
                 FrenzyWords.transitioning = false;
                 FrenzyWords.Scorelist.scoring = false;
-            }, selectLetters.length * delay);
+            }, selectLetters.length * 1000);
         }
     }
     async function hndCorrectWord(_words) {

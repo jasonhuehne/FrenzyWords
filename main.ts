@@ -246,10 +246,8 @@ namespace FrenzyWords {
             let delay: number
             if (hasDoubles.hasDoubleLetters && doubleDoubleActive){
                 doubleTrue = true;
-                delay = 1300
             } else {
                 doubleTrue = false;
-                delay = 1000
             }
             Scorelist.scoring = true;
             await hndCorrectWord(lettersPlayed);
@@ -259,7 +257,7 @@ namespace FrenzyWords {
                 Scorelist.scoring = false;
   
                  
-            }, selectLetters.length*delay);
+            }, selectLetters.length*1000);
         }
     }
     
