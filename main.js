@@ -98,8 +98,7 @@ var FrenzyWords;
             hndPlayWord(), lastPlayed = playedWord;
         } });
         shop.style.display = "none";
-        shopButton.addEventListener("click", function (event) {
-            event.stopPropagation();
+        shopButton.addEventListener("click", function () {
             if (!FrenzyWords.shopOpen) {
                 const scoreSet = document.getElementById("score");
                 // Batch style changes

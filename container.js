@@ -113,7 +113,7 @@ var FrenzyWords;
             FrenzyWords.transitioning = true;
             this.div.style.transition = "background-color 300ms ease-out, color 300ms ease, box-shadow 300ms ease, transform 300ms, opacity 300ms ease-out";
             if (FrenzyWords.doubleDoubleActive && this.fancy) {
-                this.div.style.backgroundColor = "#F4F002";
+                this.div.style.backgroundColor = "#f4b302";
                 this.spanValue.style.color = "#f4b302";
                 this.spanValue.style.textShadow = " #FC0 1px 0 10px;";
             }

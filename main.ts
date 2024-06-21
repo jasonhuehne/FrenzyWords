@@ -109,8 +109,8 @@ namespace FrenzyWords {
         playWordButton.addEventListener("click", function(){if(!shopOpen){hndPlayWord(), lastPlayed = playedWord}});
 
         shop.style.display = "none"
-        shopButton.addEventListener("click", function(event) {
-            event.stopPropagation();
+        shopButton.addEventListener("click", function() {
+
             if (!shopOpen) {
                 const scoreSet = <HTMLElement>document.getElementById("score");
             
