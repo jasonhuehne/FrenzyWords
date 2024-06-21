@@ -128,7 +128,8 @@ namespace FrenzyWords {
                 document.addEventListener("click", closeShopOnOutsideClick);
             }
              else {
-                Scorelist.scoreSpan.style.top = "45%"
+                const scoreSet = <HTMLElement>document.getElementById("score");
+                scoreSet.style.cssText = "top: 45%; transform: translate(-50%, -50%);";
                 shopButton.innerHTML = "SHOP"
                 shop.style.display = "none";
                 shopOpen = false;
@@ -136,15 +137,23 @@ namespace FrenzyWords {
             }
         });
         doubleDouble.addEventListener('click', () => {
-            const nextElement = doubleDouble.nextElementSibling;
-            if (nextElement) {const amount = parseFloat(nextElement.innerHTML);console.log(Scorelist.remove(amount));if(Scorelist.remove(amount)){doubleDoubleActive = true}}})
+            const nextElement = <HTMLElement> doubleDouble.nextElementSibling;
+            if (nextElement && nextElement.innerHTML != "") {
+                const amount = parseFloat(nextElement.innerHTML);
+                if(Scorelist.remove(amount))
+                    {console.log("bought"); 
+                    doubleDoubleActive = true; 
+                    doubleDouble.classList.add("bought"); 
+                    nextElement.innerHTML = ""}}
+                })
         doubleShort.addEventListener('click', () => {
-            const nextElement = doubleDouble.nextElementSibling;
-            if (nextElement) {const amount = parseFloat(nextElement.innerHTML);console.log(Scorelist.remove(amount));if(Scorelist.remove(amount)){doubleDoubleActive = true}}})
+            const nextElement = doubleShort.nextElementSibling;
+            if (nextElement && nextElement.innerHTML != "") {const amount = parseFloat(nextElement.innerHTML);if(Scorelist.remove(amount)){console.log("bought"); doubleDoubleActive = true; doubleDouble.classList.add("bought")}}})
 
         function closeShopOnOutsideClick(event: any) {
             if (!shop.contains(event.target) && event.target !== shopButton) {
-                    Scorelist.scoreSpan.style.top = "45%"
+                const scoreSet = <HTMLElement>document.getElementById("score");
+                scoreSet.style.cssText = "top: 50%; transform: none;";
                     shopButton.innerHTML = "SHOP"
                 shop.style.display = "none";
                 shopOpen = false;
@@ -276,10 +285,5 @@ namespace FrenzyWords {
         let hasDoubleLetters = letters.length > 0;
     
         return { hasDoubleLetters, letters };
-    }
-    
-    // Beispielaufruf
-    hasDoubleLetter("hello").then(result => console.log(result)); // { hasDoubleLetters: true, letters: ['l'] }
-    hasDoubleLetter("test").then(result => console.log(result));  // { hasDoubleLetters: false, letters: [] }
-    
+    }    
     }

@@ -234,3 +234,12 @@ opacity: 0.6;
     gap: 1em;
     columns: 4;
 }
+#Shop .bought {
+    background-color: #7e7e7e;
+}
+#Shop .bought:hover {
+    background-color: #7e7e7e;
+    filter: none;
+    transform: none;
+    transition: none;
+}

@@ -33,6 +33,7 @@ var FrenzyWords;
             }
             else {
                 this.score = oldScore;
+                this.scoreSpan.innerHTML = `${this.score}`;
                 return false;
             }
         }

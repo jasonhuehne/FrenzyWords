@@ -114,7 +114,8 @@ var FrenzyWords;
                 document.addEventListener("click", closeShopOnOutsideClick);
             }
             else {
-                FrenzyWords.Scorelist.scoreSpan.style.top = "45%";
+                const scoreSet = document.getElementById("score");
+                scoreSet.style.cssText = "top: 45%; transform: translate(-50%, -50%);";
                 shopButton.innerHTML = "SHOP";
                 shop.style.display = "none";
                 FrenzyWords.shopOpen = false;
@@ -123,27 +124,31 @@ var FrenzyWords;
         });
         doubleDouble.addEventListener('click', () => {
             const nextElement = doubleDouble.nextElementSibling;
-            if (nextElement) {
+            if (nextElement && nextElement.innerHTML != "") {
                 const amount = parseFloat(nextElement.innerHTML);
-                console.log(FrenzyWords.Scorelist.remove(amount));
                 if (FrenzyWords.Scorelist.remove(amount)) {
+                    console.log("bought");
                     FrenzyWords.doubleDoubleActive = true;
+                    doubleDouble.classList.add("bought");
+                    nextElement.innerHTML = "";
                 }
             }
         });
         doubleShort.addEventListener('click', () => {
-            const nextElement = doubleDouble.nextElementSibling;
-            if (nextElement) {
+            const nextElement = doubleShort.nextElementSibling;
+            if (nextElement && nextElement.innerHTML != "") {
                 const amount = parseFloat(nextElement.innerHTML);
-                console.log(FrenzyWords.Scorelist.remove(amount));
                 if (FrenzyWords.Scorelist.remove(amount)) {
+                    console.log("bought");
                     FrenzyWords.doubleDoubleActive = true;
+                    doubleDouble.classList.add("bought");
                 }
             }
         });
         function closeShopOnOutsideClick(event) {
             if (!shop.contains(event.target) && event.target !== shopButton) {
-                FrenzyWords.Scorelist.scoreSpan.style.top = "45%";
+                const scoreSet = document.getElementById("score");
+                scoreSet.style.cssText = "top: 50%; transform: none;";
                 shopButton.innerHTML = "SHOP";
                 shop.style.display = "none";
                 FrenzyWords.shopOpen = false;
@@ -263,8 +268,5 @@ var FrenzyWords;
         let hasDoubleLetters = letters.length > 0;
         return { hasDoubleLetters, letters };
     }
-    // Beispielaufruf
-    hasDoubleLetter("hello").then(result => console.log(result)); // { hasDoubleLetters: true, letters: ['l'] }
-    hasDoubleLetter("test").then(result => console.log(result)); // { hasDoubleLetters: false, letters: [] }
 })(FrenzyWords || (FrenzyWords = {}));
 //# sourceMappingURL=main.js.map

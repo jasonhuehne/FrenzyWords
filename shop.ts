@@ -31,6 +31,7 @@ namespace FrenzyWords {
                return true
                } else {
                 this.score = oldScore
+                this.scoreSpan.innerHTML = `${this.score}`
                 return false
                }
         }
