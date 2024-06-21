@@ -133,19 +133,10 @@ var FrenzyWords;
                 this.div.addEventListener('transitionend', transitionEndHandler);
             });
             // Handle fancy transition if needed
-            if (this.fancy && FrenzyWords.doubleDoubleActive) {
-                await new Promise(resolve => {
-                    const fancyTransitionEndHandler = (event) => {
-                        if (event.target === this.div && event.propertyName === "transform") {
-                            this.div.removeEventListener('transitionend', fancyTransitionEndHandler);
-                            resolve();
-                        }
-                    };
-                    this.div.addEventListener('transitionend', fancyTransitionEndHandler);
-                    this.div.style.transition = "transform 123ms ease";
-                    this.div.style.transform = "rotate(-15deg) scale(1.05)";
-                });
-                await startParticleAnimation(this.div);
+            if (FrenzyWords.doubleDoubleActive && this.fancy) {
+                // Start der Rotation und Partikelanimation
+                this.div.style.transform = "rotate(-15deg) scale(1.05)";
+                const particlePromise = startParticleAnimation(this.div);
                 await new Promise(resolve => {
                     const reverseFancyTransitionEndHandler = (event) => {
                         if (event.target === this.div && event.propertyName === "transform") {
@@ -166,6 +157,7 @@ var FrenzyWords;
                     this.div.addEventListener('transitionend', reverseFancyTransitionEndHandler);
                     this.div.style.transform = "rotate(0deg)";
                 });
+                await particlePromise; // Warten auf Ende der Partikelanimation
             }
             // Calculate the center of the scoreRect
             const scoreRect = FrenzyWords.Scorelist.scoreRect;
@@ -200,44 +192,59 @@ var FrenzyWords;
             else {
                 FrenzyWords.Scorelist.add(parseInt(this.spanValue.innerHTML));
             }
+            FrenzyWords.transitioning = false;
         }
     }
     FrenzyWords.Container = Container;
     async function startParticleAnimation(div) {
-        const particleCanvas = document.getElementById('particleCanvas');
+        // Erstellen Sie das Canvas-Element
+        const particleCanvas = document.createElement('canvas');
+        particleCanvas.id = 'particleCanvas';
+        // Kontext des Canvas
         const ctx = particleCanvas.getContext('2d');
-        // Canvas-Position auf die des div anpassen
+        // Größe und Position des Canvas
         const rect = div.getBoundingClientRect();
-        particleCanvas.style.left = rect.left + 'px';
-        particleCanvas.style.top = rect.top + 'px';
-        particleCanvas.width = rect.width;
-        particleCanvas.height = rect.height;
-        // Partikelanimation
+        const offsetX = window.pageXOffset + rect.left - 50; // X-Offset mit zusätzlichem Bereich
+        const offsetY = window.pageYOffset + rect.top - 50; // Y-Offset mit zusätzlichem Bereich
+        const canvasWidth = rect.width + 100; // Breite des Canvas mit zusätzlichem Bereich
+        const canvasHeight = rect.height + 100; // Höhe des Canvas mit zusätzlichem Bereich
+        // Canvas positionieren und Größe setzen
+        particleCanvas.style.position = 'absolute';
+        particleCanvas.style.left = offsetX + 'px';
+        particleCanvas.style.top = offsetY + 'px';
+        particleCanvas.width = canvasWidth;
+        particleCanvas.height = canvasHeight;
+        // Canvas dem div hinzufügen
+        document.body.appendChild(particleCanvas); // Fügt das Canvas dem Body hinzu, damit es einen größeren Bereich abdecken kann
+        // Partikelanzahl und Eigenschaften
         const particles = [];
         const particleCount = 20;
         for (let i = 0; i < particleCount; i++) {
             particles.push({
                 x: particleCanvas.width / 2,
                 y: particleCanvas.height / 2,
-                radius: Math.random() * 8 + 2,
-                color: '#FF0000',
+                radius: Math.random() * 5 + 1,
+                color: '#f4b302',
                 speedX: Math.random() * 6 - 3,
-                speedY: Math.random() * 6 - 3
+                speedY: Math.random() * 6 - 3,
+                opacity: 1 // Anfangsopazität
             });
         }
+        // Animation der Partikel
         async function animateParticles() {
-            FrenzyWords.transitioning = true;
-            for (let frame = 0; frame < 60; frame++) {
+            for (let frame = 0; frame < 30; frame++) { // 60 Frames für die Animation
                 ctx.clearRect(0, 0, particleCanvas.width, particleCanvas.height);
                 particles.forEach(particle => {
                     particle.x += particle.speedX;
                     particle.y += particle.speedY;
+                    particle.opacity -= 1 / 30; // Opazität verringern
+                    ctx.globalAlpha = particle.opacity; // Opazität setzen
                     ctx.beginPath();
                     ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
                     ctx.fillStyle = particle.color;
                     ctx.fill();
                 });
-                await new Promise(resolve => setTimeout(resolve, 16));
+                await new Promise(resolve => requestAnimationFrame(resolve)); // Nächster Frame
             }
         }
         await animateParticles();
