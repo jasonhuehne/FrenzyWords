@@ -144,7 +144,10 @@ namespace FrenzyWords {
                     {console.log("bought"); 
                     doubleDoubleActive = true; 
                     doubleDouble.classList.add("bought"); 
-                    nextElement.innerHTML = ""}}
+                    nextElement.innerHTML = ""
+                doubleDouble.style.color="white";
+            doubleDouble.style.cursor="auto"}
+        }
                 })
         doubleShort.addEventListener('click', () => {
             const nextElement = doubleShort.nextElementSibling;
@@ -153,7 +156,7 @@ namespace FrenzyWords {
         function closeShopOnOutsideClick(event: any) {
             if (!shop.contains(event.target) && event.target !== shopButton) {
                 const scoreSet = <HTMLElement>document.getElementById("score");
-                scoreSet.style.cssText = "top: 50%; transform: none;";
+                scoreSet.style.cssText = "top: 45%; transform: translate(-50%, -50%);";
                     shopButton.innerHTML = "SHOP"
                 shop.style.display = "none";
                 shopOpen = false;

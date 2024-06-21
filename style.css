@@ -34,14 +34,17 @@ body {
     z-index: 9;
 }
 #Shop h2 {
+    margin-top: 5%;
     color: white;
     text-decoration: underline;
     margin-bottom: 5%;
     text-align: center;
 }
 #Shop h3 {
+
+    margin: auto;
+    margin-top: 10%;
     color: white;
-    padding: 0%;
 }
 #Shop h4 {
     margin-block-end: 0em;
@@ -70,8 +73,11 @@ a {
  color: inherit;
 }
 footer {
-    margin-top: 50%;
-    font-size: 1.5em;
+position: absolute;
+font-size: 1.5em;
+top: 90%;
+left: 50%;
+transform: translate(-50%, -50%);
 }
 #Menu {
 background-color: white;
@@ -179,11 +185,10 @@ button:hover {
         height: 11vw;
         font-size: 0.5em;
     }
-    #ButtonArea {
+    .buyButtons1, .buyButtons2 {
         display: block;
-        gap: 2.5em;
     }
-    #ButtonArea button{
+   button{
         margin-bottom: 1em;
     }
   }
@@ -221,16 +226,18 @@ opacity: 0.6;
     display: none;
 }
 .buyButtons1{
+    color: white;
+    width: 80%;
+    margin: auto;
     margin-bottom: 10%;
-    margin-left: 4em;
-    margin-right: 4em;
     gap: 1em;
     columns: 3;
 }
 .buyButtons2{
+    color: white;
+    width: 90%;
+    margin: auto;
     margin-bottom: 10%;
-    margin-left: 4em;
-    margin-right: 4em;
     gap: 1em;
     columns: 4;
 }

@@ -131,6 +131,8 @@ var FrenzyWords;
                     FrenzyWords.doubleDoubleActive = true;
                     doubleDouble.classList.add("bought");
                     nextElement.innerHTML = "";
+                    doubleDouble.style.color = "white";
+                    doubleDouble.style.cursor = "auto";
                 }
             }
         });
@@ -148,7 +150,7 @@ var FrenzyWords;
         function closeShopOnOutsideClick(event) {
             if (!shop.contains(event.target) && event.target !== shopButton) {
                 const scoreSet = document.getElementById("score");
-                scoreSet.style.cssText = "top: 50%; transform: none;";
+                scoreSet.style.cssText = "top: 45%; transform: translate(-50%, -50%);";
                 shopButton.innerHTML = "SHOP";
                 shop.style.display = "none";
                 FrenzyWords.shopOpen = false;
